@@ -10,7 +10,8 @@ if __name__ == "__main__":
         InputVector([1,1,1])
     ]
 
-    w=[np.random.ranf()*np.random.choice([0,1]) for _ in range(3)]
+    w=[np.random.ranf() for _ in range(3)]
+    print(w)
     activFunc = Sigm()(1.0)
     activFuncDeriv = Sigm().derivative(1.0)
 

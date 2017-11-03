@@ -1,4 +1,3 @@
-import random
 import numpy as np
 
 def sign(x):
@@ -39,7 +38,7 @@ class Perceptron:
     """ Perceptron is a simple neural net that can
         specify which class object belongs to. """
 
-    def __init__(self, weights, activFunc, activFuncDeriv, bias=-0.8*np.random.ranf()-0.1, lRate=0.5):
+    def __init__(self, weights, activFunc, activFuncDeriv, bias=-np.random.ranf(), lRate=0.5):
         self.__dict__['_weights'] = np.array(weights)
         self.__dict__['_activFunc'] = activFunc
         self.__dict__['_activFuncDeriv'] = activFuncDeriv
