@@ -1,37 +1,38 @@
 from perceptron import *
-from inputs import *
+from letters import *
 import numpy as np
 
+class InputVector:
+    def __init__(self, x, d):
+        self.__dict__['_x'] = x
+        self.__dict__['_d'] = d
+    def __getitem__(self, index):
+        if index == 'x':
+            return self._x
+        if index == 'd':
+            return self._d
+
 if __name__ == "__main__":
-    inputs = [
-        InputVector([0,0,1]),
-        InputVector([0,1,1]),
-        InputVector([1,0,1]),
-        InputVector([1,1,1])
+    #def __init__(self, nLayers, nNeurons, nInputs, activFuncs, activFuncDerivs):
+    lm = LayerManager(2, [3, 1], [35, 3], [Sigm()(1.0), sign], [Sigm().derivative(1.0), one])
+
+    lettersInput = [
+        LetterInput('a'),
+        LetterInput('p'),
+        LetterInput('o'),
+        LetterInput('b'),
+        LetterInput('A'),
+        LetterInput('B'),
+        LetterInput('C'),
+        LetterInput('D')
     ]
 
-    w1=[np.random.ranf() for _ in range(3)]
-    w2=[np.random.ranf() for _ in range(3)]
-    w3=[np.random.ranf() for _ in range(2)]
+    for i in range(20):
+        for j in range(len(lettersInput)):
+            lm.trainLayers([
+                InputVector(lettersInput[j]._x, lettersInput[j]._interD),
+                InputVector(lettersInput[j]._interD, lettersInput[j]._d)
+            ])
 
-    activFunc = Sigm()(1.0)
-    activFuncDeriv = Sigm().derivative(1.0)
-
-
-    p1 = Perceptron(w1, activFunc, activFuncDeriv)
-    p2 = Perceptron(w2, activFunc, activFuncDeriv)
-    p3 = Perceptron(w3, ident, activFuncDeriv)
-
-    for i in range(500):
-        p1.train(inputs[0]._x, 0)
-        p1.train(inputs[1]._x, 1)
-        p1.train(inputs[2]._x, 0)
-        p1.train(inputs[3]._x, 1)
-        p2.train(inputs[0]._x, 0)
-        p2.train(inputs[1]._x, 1)
-        p2.train(inputs[2]._x, 0)
-        p2.train(inputs[3]._x, 1)
-        p3.train([1,1], 1)
-        p3.train([0,0], 0)
-
-    print("Guess:", p3.process( [p1.process(inputs[1]._x), p2.process(inputs[1]._x) ] ))
+    test = LetterInput('t')
+    print(lm.processLayers(test._x))
