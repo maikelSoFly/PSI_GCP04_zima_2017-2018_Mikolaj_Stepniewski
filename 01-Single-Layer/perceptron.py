@@ -1,10 +1,21 @@
 import numpy as np
 import random
 
+""" Sign function which can be translated by given value. Used as
+    activation function for perceptron.
+
+    - Parameters:
+        - translation: breaking point for the function.
+
+    - Usage:
+        - Sign()(0.5)
+            - returns sign function for unipolar sigmoidal function
+
+"""
 class Sign:
-    def __call__(self):
+    def __call__(self, translation):
         def sign(x):
-            if x >= 0.5:
+            if x >= translation:
                 return 1
             else:
                 return 0

@@ -15,11 +15,11 @@ class InputVector:
 if __name__ == "__main__":
 
     lm = LayerManager(
-        2,                                                 # number of layers
-        [3, 1],                                            # number of neurons in layers
-        [35, 3],                                           # number of inputs in layers
-        [Sigm()(1.0), Sign()()],                           # activation functions in layers
-        [Sigm().derivative(1.0), Sign().derivative()]      # activation function derivatives in layers
+        2,                                              # number of layers
+        [3, 1],                                         # number of neurons in layers
+        [35, 3],                                        # number of inputs in layers
+        [Sigm()(1.0), Sign()(0.5)],                     # activation functions in layers
+        [Sigm().derivative(1.0), Sign().derivative()]   # activation function derivatives in layers
     )
 
     lettersInput = [
