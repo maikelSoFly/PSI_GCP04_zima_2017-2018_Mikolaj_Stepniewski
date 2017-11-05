@@ -6,6 +6,9 @@ def sign(x):
     else:
         return -1
 
+def ident(x):
+    return float(x)
+
 """ Sigmoidal function & its derivative for given beta. Used as
     Activation function for perceptron.
 
@@ -38,7 +41,7 @@ class Perceptron:
     """ Perceptron is a simple neural net that can
         specify which class object belongs to. """
 
-    def __init__(self, weights, activFunc, activFuncDeriv, bias=-np.random.ranf(), lRate=0.5):
+    def __init__(self, weights, activFunc, activFuncDeriv, bias=np.random.ranf(), lRate=0.5):
         self.__dict__['_weights'] = np.array(weights)
         self.__dict__['_activFunc'] = activFunc
         self.__dict__['_activFuncDeriv'] = activFuncDeriv
@@ -59,7 +62,10 @@ class Perceptron:
     def train(self, input, target):
         guess = self.process(input)
         delta = guess - target
-        self._error = delta * self._activFuncDeriv(self._sum)
+        if 'sigm' in self._activFunc.__name__:
+            self._error = delta * self._activFuncDeriv(self._sum)
+        else:
+            self._error = delta
 
         for i in range(len(self._weights)):
             self._weights[i] -= self._lRate * self._error * input[i]
