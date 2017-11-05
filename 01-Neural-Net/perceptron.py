@@ -14,6 +14,9 @@ class Sign:
             return 1
         return signDeriv
 
+def ident(x):
+    return float(x)
+
 """ Sigmoidal function & its derivative for given beta. Used as
     Activation function for perceptron.
 
