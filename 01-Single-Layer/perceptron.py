@@ -10,7 +10,6 @@ import random
     - Usage:
         - Sign()(0.5)
             - returns sign function for unipolar sigmoidal function
-
 """
 class Sign:
     def __call__(self, translation):
