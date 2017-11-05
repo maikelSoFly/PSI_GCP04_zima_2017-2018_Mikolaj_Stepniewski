@@ -1,7 +1,8 @@
 import numpy as np
+import random
 
 def sign(x):
-    if x >= 0:
+    if x >= 0.5:
         return 1
     else:
         return 0
@@ -41,7 +42,7 @@ class Perceptron:
     """ Perceptron is a simple neural net that can
         specify which class object belongs to. """
 
-    def __init__(self, weights, activFunc, activFuncDeriv, lRate=0.5, bias=np.random.ranf()):
+    def __init__(self, weights, activFunc, activFuncDeriv, lRate=0.5, bias=random.uniform(-1,1)):
         self.__dict__['_weights'] = np.array(weights)
         self.__dict__['_activFunc'] = activFunc
         self.__dict__['_activFuncDeriv'] = activFuncDeriv
@@ -63,6 +64,7 @@ class Perceptron:
     def train(self, input, target):
         guess = self.process(input)
         delta = guess - target
+
         self._error = delta * self._activFuncDeriv(self._sum)
 
         for i in range(len(self._weights)):
@@ -75,19 +77,18 @@ class Perceptron:
             return self._val
 
 class Layer:
-    def __init__(self, nNeurons, nInputs, activFunc, activFuncDeriv):
+    def __init__(self, numOfNeurons, numOfInputs, activFunc, activFuncDeriv):
         self.__dict__['_neurons'] = []
-        self.__dict__['_nNeurons'] = nNeurons
+        self.__dict__['_numOfNeurons'] = numOfNeurons
         self.__dict__['_activFunc'] = activFunc
         self.__dict__['_activFuncDeriv'] = activFuncDeriv
-        self.__dict__['_outputs'] = []
-        self.__dict__['_nIputs'] = nInputs
+        self.__dict__['_numOfInputs'] = numOfInputs
 
-        for n in range(nNeurons):
-            w = [np.random.ranf() for _ in range(nInputs)]
+        for n in range(numOfNeurons):
+            w = [random.uniform(-1,1) for _ in range(numOfInputs)]
             self._neurons.append(Perceptron(w, activFunc, activFuncDeriv))
 
-    def processOutputs(self, inputs):
+    def processNeurons(self, inputs):
         outputs = []
         for n in self._neurons:
             outputs.append(n.process(inputs))
@@ -96,14 +97,17 @@ class Layer:
 
     def trainNeurons(self, inputs, desired):
         outputs = []
-        for n in self._neurons:
-            n.train(inputs, desired)
+        for index, n in enumerate(self._neurons):
+            if self._numOfNeurons > 1:
+                n.train(inputs, desired[index])
+            else:
+                n.train(inputs, desired)
             outputs.append(n._val)
         return outputs
 
 
 
-class Multilayer:
+class LayerManager:
     def __init__(self, nLayers, nNeurons, nInputs, activFuncs, activFuncDerivs):
         self.__dict__['_layers'] = []
         self.__dict__['_nLayers'] = nLayers
@@ -114,22 +118,18 @@ class Multilayer:
         for i in range(nLayers):
             self._layers.append(Layer(nNeurons[i], nInputs[i], activFuncs[i], activFuncDerivs[i]))
 
-    def processNetOutput(self, inputs):
+    def processLayers(self, inputs):
         prevOuts = None
+        output = []
         for i in range(self._nLayers):
             if i == 0:
-                prevOuts = self._layers[i].processOutputs(inputs)
-                print('Layer1:', prevOuts)
+                prevOuts = self._layers[i].processNeurons(inputs)
+                output.append(prevOuts)
             else:
-                prevOuts = self._layers[i].processOutputs(prevOuts)
-                print('Layer2:', prevOuts)
+                prevOuts = self._layers[i].processNeurons(prevOuts)
+                output.append(prevOuts)
+        return output
 
-    def trainNet(self, inputVectors):
-        prevOuts = None
-        #print(inputVectors._x)
-
+    def trainLayers(self, inputVectors):
         for i in range(self._nLayers):
-            if i == 0:
-                prevOuts = self._layers[i].trainNeurons(inputVectors._x, inputVectors._d)
-            else:
-                prevOuts = self._layers[i].trainNeurons(prevOuts, inputVectors._d)
+            self._layers[i].trainNeurons(inputVectors[i]._x, inputVectors[i]._d)
