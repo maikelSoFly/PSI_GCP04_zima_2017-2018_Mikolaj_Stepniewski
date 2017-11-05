@@ -13,8 +13,14 @@ class InputVector:
             return self._d
 
 if __name__ == "__main__":
-    #def __init__(self, nLayers, nNeurons, nInputs, activFuncs, activFuncDerivs):
-    lm = LayerManager(2, [3, 1], [35, 3], [Sigm()(1.0), sign], [Sigm().derivative(1.0), one])
+
+    lm = LayerManager(
+        2,                                                 # number of layers
+        [3, 1],                                            # number of neurons in layers
+        [35, 3],                                           # number of inputs in layers
+        [Sigm()(1.0), Sign()()],                             # activation functions in layers
+        [Sigm().derivative(1.0), Sign().derivative()]      # activation function derivatives in layers
+    )
 
     lettersInput = [
         LetterInput('a'),
@@ -30,7 +36,9 @@ if __name__ == "__main__":
     for i in range(20):
         for j in range(len(lettersInput)):
             lm.trainLayers([
+                # for layer 0:
                 InputVector(lettersInput[j]._x, lettersInput[j]._interD),
+                # for layer 1:
                 InputVector(lettersInput[j]._interD, lettersInput[j]._d)
             ])
 

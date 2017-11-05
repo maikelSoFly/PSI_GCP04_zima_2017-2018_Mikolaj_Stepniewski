@@ -133,13 +133,3 @@ class LetterInput():
             return self._d
         elif index=='interD':
             return self._interD
-
-    # def makeTestInputs(no_of_tests):
-    #     testInputsArray = []
-    #     x = 0
-    #     for i in range(0, no_of_tests):
-    #         testInputsArray.append(TestInput(TestInput.availableLetters[x]))
-    #         x += 1
-    #         if x == len(TestInput.availableLetters):
-    #             x = 0
-    #     return testInputsArray

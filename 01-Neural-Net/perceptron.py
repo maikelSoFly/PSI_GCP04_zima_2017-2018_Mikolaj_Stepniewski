@@ -1,14 +1,18 @@
 import numpy as np
 import random
 
-def sign(x):
-    if x >= 0.5:
-        return 1
-    else:
-        return 0
-
-def one(x):
-    return 1
+class Sign:
+    def __call__(self):
+        def sign(x):
+            if x >= 0.5:
+                return 1
+            else:
+                return 0
+        return sign
+    def derivative(self):
+        def signDeriv(x):
+            return 1
+        return signDeriv
 
 """ Sigmoidal function & its derivative for given beta. Used as
     Activation function for perceptron.
@@ -39,7 +43,7 @@ class Sigm:
 
 
 class Perceptron:
-    """ Perceptron is a simple neural net that can
+    """ Perceptron is a simple neuron that can
         specify which class object belongs to. """
 
     def __init__(self, weights, activFunc, activFuncDeriv, lRate=0.5, bias=random.uniform(-1,1)):
@@ -72,9 +76,16 @@ class Perceptron:
 
         self._bias = self._lRate * self._error
 
+
+    """ Access method """
     def __getitem__(self,index):
         if index=='val':
             return self._val
+        elif index=='sum':
+            return self._sum
+        elif index=='error':
+            return self._error
+
 
 class Layer:
     def __init__(self, numOfNeurons, numOfInputs, activFunc, activFuncDeriv):
@@ -108,20 +119,20 @@ class Layer:
 
 
 class LayerManager:
-    def __init__(self, nLayers, nNeurons, nInputs, activFuncs, activFuncDerivs):
+    def __init__(self, numOfLayers, numOfNeurons, numOfInputs, activFuncs, activFuncDerivs):
         self.__dict__['_layers'] = []
-        self.__dict__['_nLayers'] = nLayers
-        self.__dict__['_nInputs'] = nInputs
+        self.__dict__['_numOfLayers'] = numOfLayers
+        self.__dict__['_numOfInputs'] = numOfInputs
         self.__dict__['_activFuncs'] = activFuncs
         self.__dict__['_activFuncDerivs'] = activFuncDerivs
 
-        for i in range(nLayers):
-            self._layers.append(Layer(nNeurons[i], nInputs[i], activFuncs[i], activFuncDerivs[i]))
+        for i in range(numOfLayers):
+            self._layers.append(Layer(numOfNeurons[i], numOfInputs[i], activFuncs[i], activFuncDerivs[i]))
 
     def processLayers(self, inputs):
         prevOuts = None
         output = []
-        for i in range(self._nLayers):
+        for i in range(self._numOfLayers):
             if i == 0:
                 prevOuts = self._layers[i].processNeurons(inputs)
                 output.append(prevOuts)
@@ -131,5 +142,13 @@ class LayerManager:
         return output
 
     def trainLayers(self, inputVectors):
-        for i in range(self._nLayers):
+        for i in range(self._numOfLayers):
             self._layers[i].trainNeurons(inputVectors[i]._x, inputVectors[i]._d)
+
+
+    """ Access method """
+    def __getitem__(self,index):
+        if index=='layers':
+            return self._layers
+        elif index=='numOfLayers':
+            return self._numOfLayers
