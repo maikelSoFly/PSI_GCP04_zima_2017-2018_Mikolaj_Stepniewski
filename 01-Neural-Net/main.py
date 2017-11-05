@@ -3,30 +3,22 @@ from inputs import *
 import numpy as np
 
 if __name__ == "__main__":
-    inputs = [
-        InputVector([0,0,1]),
-        InputVector([0,1,1]),
-        InputVector([1,0,1]),
-        InputVector([1,1,1])
+    #def __init__(self, nLayers, nNeurons, nInputs, activFuncs, activFuncDerivs):
+    ml = Multilayer(2, [3, 1], [35, 3], [Sigm()(1.0), sign], [Sigm().derivative(1.0), one])
+    inputVectors = [
+        TestInput('a'),
+        TestInput('b'),
+        TestInput('o'),
+        TestInput('A'),
+        TestInput('B'),
+        TestInput('C'),
+        TestInput('D')
     ]
 
-    w=[np.random.ranf() for _ in range(3)]
-    print(w)
-    activFunc = Sigm()(1.0)
-    activFuncDeriv = Sigm().derivative(1.0)
+    #print(inputVectors[0]._x)
 
+    for i in range(15):
+        for j in range(len(inputVectors)):
+            ml.trainNet(inputVectors[j])
 
-    p = Perceptron(w, activFunc, activFuncDeriv)
-
-    for i in range(500):
-        p.train(inputs[0]._x, 0)
-        p.train(inputs[1]._x, 1)
-        p.train(inputs[2]._x, 0)
-        p.train(inputs[3]._x, 1)
-
-
-
-    print("Guess:", p.process(inputs[0]._x))
-    print("Guess:", p.process(inputs[1]._x))
-    print("Guess:", p.process(inputs[2]._x))
-    print("Guess:", p.process(inputs[3]._x))
+    ml.processNetOutput(inputVectors[0]._x)
