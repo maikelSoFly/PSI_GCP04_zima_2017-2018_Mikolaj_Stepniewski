@@ -3,7 +3,6 @@ import numpy as np
 from enum import Enum
 
 
-
 """ Sign function which can be translated by given value. Used as
     activation function for perceptron.
 
@@ -11,8 +10,9 @@ from enum import Enum
         - translation: breaking point for the function.
 
     - Usage:
-        - Sign()(0.5)
-            - returns sign function for unipolar sigmoidal function
+        - Sign()(n - 1)
+            - returns sign function with threshold for AND type, where n
+            is number of inputs
 """
 class Sign:
     def __call__(self, translation):
@@ -22,6 +22,7 @@ class Sign:
             else:
                 return -1
         return sign
+
 
 class Adaline:
     def __init__(self, weights, activFunc, lRate = 0.05, bias=random.uniform(-1,1)):
@@ -46,9 +47,6 @@ class Adaline:
         self._bias = self._lRate * error
 
 
-
-
-
 class Layer:
     def __init__(self, numOfNeurons, numOfInputs, activFunc):
         self.__dict__['_neurons'] = []
@@ -66,7 +64,6 @@ class Layer:
             outputs.append(n.process(inputs))
         return outputs
 
-
     def trainNeurons(self, inputs, desired):
         outputs = []
         for index, n in enumerate(self._neurons):
@@ -77,6 +74,7 @@ class Layer:
             outputs.append(n._val)
         return outputs
 
+
 class Madaline:
     def __init__(self, numOfNeurons, numOfInputs, activFunc, thresholdFuncType):
         self.__dict__['_numOfNeurons'] = numOfNeurons
@@ -85,8 +83,6 @@ class Madaline:
         self.__dict__['_thresholdFunc'] = self.getThresholdFunc(numOfInputs, thresholdFuncType)
         self.__dict__['_numOfInputs'] = numOfInputs
         self.__dict__['_layer'] = Layer(numOfNeurons, numOfInputs, activFunc)
-
-
 
     def process(self, inputs):
         outputs =  self._layer.processNeurons(inputs)
