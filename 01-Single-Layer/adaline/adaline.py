@@ -25,7 +25,7 @@ class Sign:
 
 
 class Adaline:
-    def __init__(self, weights, activFunc, lRate = 0.01, bias=random.uniform(-1,1)):
+    def __init__(self, weights, activFunc, lRate = 0.05, bias=random.uniform(-1,1)):
         self.__dict__['_weights'] = weights
         self.__dict__['_bias'] = bias
         self.__dict__['_lRate'] = lRate
@@ -35,7 +35,8 @@ class Adaline:
 
     def process(self, inputs):
         self._sum = np.dot(np.array(inputs), self._weights) + self._bias
-        return self._activFunc(self._sum)
+        self._val = self._activFunc(self._sum)
+        return self._val
 
     def train(self, inputs, desired):
         guess = self.process(inputs)
@@ -132,8 +133,10 @@ class LayerManager:
         return output
 
     def trainLayers(self, inputVectors):
+        results = []
         for i in range(self._numOfLayers):
-            self._layers[i].trainNeurons(inputVectors[i]._x, inputVectors[i]._d)
+            results.append(self._layers[i].trainNeurons(inputVectors[i]._x, inputVectors[i]._d))
+        return results
 
 
     """ Access method """

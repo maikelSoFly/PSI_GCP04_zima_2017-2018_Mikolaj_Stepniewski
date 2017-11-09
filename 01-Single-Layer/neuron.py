@@ -59,7 +59,7 @@ class Neuron:
     to specify which class object belongs to, returning only 0 or 1, whereas sigmoidal neuron can return
     every value from 0 to 1. """
 
-    def __init__(self, weights, activFunc, activFuncDeriv, lRate=0.5, bias=random.uniform(-1,1)):
+    def __init__(self, weights, activFunc, activFuncDeriv, lRate=0.05, bias=random.uniform(-1,1)):
         self.__dict__['_weights'] = np.array(weights)
         self.__dict__['_activFunc'] = activFunc
         self.__dict__['_activFuncDeriv'] = activFuncDeriv
@@ -88,6 +88,7 @@ class Neuron:
             self._weights[i] -= self._lRate * self._error * input[i]
 
         self._bias = self._lRate * self._error
+
 
 
     """ Access method """
@@ -155,8 +156,10 @@ class LayerManager:
         return output
 
     def trainLayers(self, inputVectors):
+        results = []
         for i in range(self._numOfLayers):
-            self._layers[i].trainNeurons(inputVectors[i]._x, inputVectors[i]._d)
+            results.append(self._layers[i].trainNeurons(inputVectors[i]._x, inputVectors[i]._d))
+        return results
 
 
     """ Access method """

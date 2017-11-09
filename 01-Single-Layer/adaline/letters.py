@@ -20,19 +20,6 @@ class LetterInput():
             self._interD = [-1,-1,-1]
             self._d = -1
 
-        elif self._letter == 'I':
-            self._x = [
-                -1,  -1,  1,  -1,  -1,
-                -1,  -1,  1,  -1,  -1,
-                -1,  -1,  1,  -1,  -1,
-                -1,  -1,  1,  -1,  -1,
-                -1,  -1,  1,  -1,  -1,
-                -1,  -1,  1,  -1,  -1,
-                -1,  -1,  1,  -1,  -1
-            ]
-            self._interD = [-1,1,-1]
-            self._d = 1
-
 
         elif self._letter == 'b':
             self._x = [
@@ -73,15 +60,54 @@ class LetterInput():
             self._interD = [-1,-1,-1]
             self._d = -1
 
-        elif self._letter == 'o':
+        elif self._letter == 'c':
             self._x = [
-                 -1,  -1,  -1,  -1,  -1,
+                -1,  -1,  -1,  -1,  -1,
                  -1,  -1,  -1,  -1,  -1,
                  -1,  -1,  -1,  -1,  -1,
                  -1,  1,  1,  1,  -1,
-                 -1,  1,  -1,  1,  -1,
-                 -1,  1,  -1,  1,  -1,
+                 -1,  1,  -1,  -1,  -1,
+                 -1,  1,  -1,  -1,  -1,
                  -1,  1,  1,  1,  -1
+                ]
+            self._interD = [-1,-1,-1]
+            self._d = -1
+
+        elif self._letter == 'w':
+            self._x = [
+                -1,  -1,  -1,  -1,  -1,
+                 -1,  -1,  -1,  -1,  -1,
+                 -1,  -1,  -1,  -1,  -1,
+                 1,  -1,  -1,  -1,  1,
+                 1,  -1,  -1,  -1,  1,
+                 1,  -1,  1,  -1,  1,
+                 -1,  1,  -1,  1,  -1
+                ]
+            self._interD = [1,-1,1]
+            self._d = -1
+
+        elif self._letter == 'd':
+            self._x = [
+                -1,  -1,  -1,  -1,  1,
+                 -1,  -1,  -1,  -1,  1,
+                 -1,  -1,  -1,  -1,  1,
+                 -1,  -1,  1,  1,  1,
+                 -1,  1,  -1,  -1,  1,
+                 -1,  1,  -1,  -1,  1,
+                 -1,  1,  1,  1,  1
+                ]
+            self._interD = [-1,-1,-1]
+            self._d = -1
+
+        elif self._letter == 'o':
+            self._x = [
+                 -1, -1, -1, -1, -1,
+                 -1, -1, -1, -1, -1,
+                 -1, -1, -1, -1, -1,
+                 -1, 1, 1, 1, -1,
+                 -1, 1, -1, 1, -1,
+                 -1, 1, -1, 1, -1,
+                 -1, 1, 1, 1, -1
                 ]
             self._interD = [-1,-1,-1]
             self._d = -1
@@ -112,6 +138,19 @@ class LetterInput():
             self._interD = [1,1,1]
             self._d = 1
 
+        elif self._letter == 'I':
+            self._x = [
+                -1,  -1,  1,  -1,  -1,
+                -1,  -1,  1,  -1,  -1,
+                -1,  -1,  1,  -1,  -1,
+                -1,  -1,  1,  -1,  -1,
+                -1,  -1,  1,  -1,  -1,
+                -1,  -1,  1,  -1,  -1,
+                -1,  -1,  1,  -1,  -1
+            ]
+            self._interD = [-1,1,-1]
+            self._d = 1
+
 
         elif self._letter == 'C':
             self._x = [
@@ -126,9 +165,6 @@ class LetterInput():
             self._interD = [1,1,-1]
             self._d = 1
 
-        # 1 + 1 - 1 = 1
-        # OR: 3 - 1 = 2
-        # if x > -2 ret 1
 
         elif self._letter == 'D':
             self._x= [
@@ -142,6 +178,45 @@ class LetterInput():
             ]
             self._interD = [1,1,1]
             self._d = 1
+
+        elif self._letter == 'F':
+            self._x = [
+            1, 1, 1, 1, 1,
+            1, -1, -1, -1, -1,
+            1, -1, -1, -1, -1,
+            1, 1, 1, 1, -1,
+            1, -1, -1, -1, -1,
+            1, -1, -1, -1, -1,
+            1, -1, -1, -1, -1,
+            ]
+            self._interD = [1,  1,  -1]
+            self._d = 1
+
+        elif self._letter == 'K':
+            self._x = [
+            1, -1, -1, -1, 1,
+            1, -1, -1, 1, -1,
+            1, -1, 1, -1, -1,
+            1, 1, -1, -1, -1,
+            1, -1, 1, -1, -1,
+            1, -1, -1, 1, -1,
+            1, -1, -1, -1, 1,
+            ]
+            self._interD = [1,  1,  1]
+            self._d = 1
+
+        elif self._letter == 'H':
+            self._x = [
+            1, -1, -1, -1, 1,
+            1, -1, -1, -1, 1,
+            1, -1, -1, -1, 1,
+            1, 1, 1, 1, 1,
+            1, -1, -1, -1, 1,
+            1, -1, -1, -1, 1,
+            1, -1, -1, -1, 1,
+            ]
+            self._interD = [1,  1,  1]
+            self._d = 1
     def __getitem__(self, index):
         if index=='x':
             return self._x
@@ -149,5 +224,3 @@ class LetterInput():
             return self._d
         elif index=='interD':
             return self._interD
-        elif index=='letter':
-            return self._letter
