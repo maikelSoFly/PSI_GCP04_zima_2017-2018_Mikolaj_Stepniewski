@@ -55,8 +55,9 @@ class Sigm:
 
 
 class Neuron:
-    """ Neuron is a simple neuron that can
-        specify which class object belongs to. """
+    """ This is template class for both perceptron and sigmoidal neuron. Perceptron is able
+    to specify which class object belongs to, returning only 0 or 1, whereas sigmoidal neuron can return 
+    every value from 0 to 1. """
 
     def __init__(self, weights, activFunc, activFuncDeriv, lRate=0.5, bias=random.uniform(-1,1)):
         self.__dict__['_weights'] = np.array(weights)
