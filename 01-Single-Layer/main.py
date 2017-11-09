@@ -14,13 +14,15 @@ class InputVector:
 
 if __name__ == "__main__":
 
-    lm = LayerManager(
+    lmSig = LayerManager(
         2,                                              # number of layers
         [3, 1],                                         # number of neurons in layers
         [35, 3],                                        # number of inputs in layers
         [Sigm()(1.0), Sign()(0.5)],                     # activation functions in layers
-        [Sigm().derivative(1.0), Sign().derivative()]   # activation function derivatives in layers
+        [Sigm().derivative(1.0), Sign().derivative()],  # activation function derivatives in layers
+        NeuronType.PERCEPTRON
     )
+
 
     lettersInput = [
         LetterInput('a'),
@@ -33,14 +35,16 @@ if __name__ == "__main__":
         LetterInput('D')
     ]
 
-    for i in range(20):
+    for i in range(100):
         for j in range(len(lettersInput)):
-            lm.trainLayers([
+            lmSig.trainLayers([
                 # for layer 0:
                 InputVector(lettersInput[j]._x, lettersInput[j]._interD),
                 # for layer 1:
                 InputVector(lettersInput[j]._interD, lettersInput[j]._d)
             ])
 
-    test = LetterInput('t')
-    print(lm.processLayers(test._x))
+
+
+    test = LetterInput('A')
+    print(lmSig.processLayers(test._x))

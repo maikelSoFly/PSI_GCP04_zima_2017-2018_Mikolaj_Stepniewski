@@ -1,5 +1,10 @@
 import numpy as np
 import random
+from enum import Enum
+
+class NeuronType(Enum):
+    PERCEPTRON = 0
+    ADALINE = 1
 
 """ Sign function which can be translated by given value. Used as
     activation function for perceptron.
@@ -52,7 +57,6 @@ class Sigm:
         return sigmDeriv
 
 
-
 class Perceptron:
     """ Perceptron is a simple neuron that can
         specify which class object belongs to. """
@@ -99,16 +103,20 @@ class Perceptron:
 
 
 class Layer:
-    def __init__(self, numOfNeurons, numOfInputs, activFunc, activFuncDeriv):
+    def __init__(self, numOfNeurons, numOfInputs, activFunc, activFuncDeriv, neuronType):
         self.__dict__['_neurons'] = []
         self.__dict__['_numOfNeurons'] = numOfNeurons
         self.__dict__['_activFunc'] = activFunc
         self.__dict__['_activFuncDeriv'] = activFuncDeriv
         self.__dict__['_numOfInputs'] = numOfInputs
+        self.__dict__['_neuronType'] = neuronType
 
         for n in range(numOfNeurons):
             w = [random.uniform(-1,1) for _ in range(numOfInputs)]
-            self._neurons.append(Perceptron(w, activFunc, activFuncDeriv))
+            if neuronType == NeuronType.PERCEPTRON:
+                self._neurons.append(Perceptron(w, activFunc, activFuncDeriv))
+            elif neuronType == NeuronType.ADALINE:
+                self._neurons.append(Adaline(w, activFunc))
 
     def processNeurons(self, inputs):
         outputs = []
@@ -130,7 +138,7 @@ class Layer:
 
 
 class LayerManager:
-    def __init__(self, numOfLayers, numOfNeurons, numOfInputs, activFuncs, activFuncDerivs):
+    def __init__(self, numOfLayers, numOfNeurons, numOfInputs, activFuncs, activFuncDerivs, neuronType):
         self.__dict__['_layers'] = []
         self.__dict__['_numOfLayers'] = numOfLayers
         self.__dict__['_numOfInputs'] = numOfInputs
@@ -138,7 +146,7 @@ class LayerManager:
         self.__dict__['_activFuncDerivs'] = activFuncDerivs
 
         for i in range(numOfLayers):
-            self._layers.append(Layer(numOfNeurons[i], numOfInputs[i], activFuncs[i], activFuncDerivs[i]))
+            self._layers.append(Layer(numOfNeurons[i], numOfInputs[i], activFuncs[i], activFuncDerivs[i], neuronType))
 
     def processLayers(self, inputs):
         prevOuts = None
