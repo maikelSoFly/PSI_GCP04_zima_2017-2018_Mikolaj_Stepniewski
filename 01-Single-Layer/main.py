@@ -1,4 +1,4 @@
-from perceptron import *
+from neuron import *
 from letters import *
 import numpy as np
 
@@ -20,9 +20,7 @@ if __name__ == "__main__":
         [35, 3],                                        # number of inputs in layers
         [Sigm()(1.0), Sign()(0.5)],                     # activation functions in layers
         [Sigm().derivative(1.0), Sign().derivative()],  # activation function derivatives in layers
-        NeuronType.PERCEPTRON
     )
-
 
     lettersInput = [
         LetterInput('a'),
@@ -43,8 +41,6 @@ if __name__ == "__main__":
                 # for layer 1:
                 InputVector(lettersInput[j]._interD, lettersInput[j]._d)
             ])
-
-
 
     test = LetterInput('A')
     print(lmSig.processLayers(test._x))
