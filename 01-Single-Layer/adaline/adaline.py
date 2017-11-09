@@ -25,7 +25,7 @@ class Sign:
 
 
 class Adaline:
-    def __init__(self, weights, activFunc, lRate = 0.05, bias=random.uniform(-1,1)):
+    def __init__(self, weights, activFunc, lRate = 0.01, bias=random.uniform(-1,1)):
         self.__dict__['_weights'] = weights
         self.__dict__['_bias'] = bias
         self.__dict__['_lRate'] = lRate
@@ -108,3 +108,37 @@ class Madaline:
             return self._layer
         elif index == 'thresholdFuncType':
             return self._thresholdFuncType
+
+class LayerManager:
+    def __init__(self, numOfLayers, numOfNeurons, numOfInputs, activFuncs):
+        self.__dict__['_layers'] = []
+        self.__dict__['_numOfLayers'] = numOfLayers
+        self.__dict__['_numOfInputs'] = numOfInputs
+        self.__dict__['_activFuncs'] = activFuncs
+
+        for i in range(numOfLayers):
+            self._layers.append(Layer(numOfNeurons[i], numOfInputs[i], activFuncs[i]))
+
+    def processLayers(self, inputs):
+        prevOuts = None
+        output = []
+        for i in range(self._numOfLayers):
+            if i == 0:
+                prevOuts = self._layers[i].processNeurons(inputs)
+                output.append(prevOuts)
+            else:
+                prevOuts = self._layers[i].processNeurons(prevOuts)
+                output.append(prevOuts)
+        return output
+
+    def trainLayers(self, inputVectors):
+        for i in range(self._numOfLayers):
+            self._layers[i].trainNeurons(inputVectors[i]._x, inputVectors[i]._d)
+
+
+    """ Access method """
+    def __getitem__(self,index):
+        if index=='layers':
+            return self._layers
+        elif index=='numOfLayers':
+            return self._numOfLayers

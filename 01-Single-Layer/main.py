@@ -30,6 +30,7 @@ if __name__ == "__main__":
         LetterInput('A'),
         LetterInput('B'),
         LetterInput('C'),
+        LetterInput('I'),
         LetterInput('D')
     ]
 
@@ -42,5 +43,5 @@ if __name__ == "__main__":
                 InputVector(lettersInput[j]._interD, lettersInput[j]._d)
             ])
 
-    test = LetterInput('A')
+    test = LetterInput('I')
     print(lmSig.processLayers(test._x))

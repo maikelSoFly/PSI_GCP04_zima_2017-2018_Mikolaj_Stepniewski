@@ -20,6 +20,19 @@ class LetterInput():
             self._interD = [-1,-1,-1]
             self._d = -1
 
+        elif self._letter == 'I':
+            self._x = [
+                -1,  -1,  1,  -1,  -1,
+                -1,  -1,  1,  -1,  -1,
+                -1,  -1,  1,  -1,  -1,
+                -1,  -1,  1,  -1,  -1,
+                -1,  -1,  1,  -1,  -1,
+                -1,  -1,  1,  -1,  -1,
+                -1,  -1,  1,  -1,  -1
+            ]
+            self._interD = [-1,1,-1]
+            self._d = 1
+
 
         elif self._letter == 'b':
             self._x = [
