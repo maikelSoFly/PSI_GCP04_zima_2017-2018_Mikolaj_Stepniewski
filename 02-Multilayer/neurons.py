@@ -88,14 +88,15 @@ class Neuron:
 
         self._bias = self._lRate * self._activFuncDeriv(self._sum) * self._delta
 
-    def calculateDelta(self, parentNeurons):
-        pWeights = []
-        pDeltas = []
-        for pnn in parentNeurons:
-            pWeights.append(pnn._weights[self._iid])
-            pDeltas.append(pnn._delta)
+    def calculateDelta(self, childNeurons):
+        """ Child neurons weights & deltas: """
+        cWeights = []
+        cDeltas = []
+        for cnn in childNeurons:
+            cWeights.append(cnn._weights[self._iid])
+            cDeltas.append(cnn._delta)
 
-        self._delta = np.dot(np.array(pWeights), np.array(pDeltas))
+        self._delta = np.dot(np.array(cWeights), np.array(cDeltas))
 
     """ Access method """
     def __getitem__(self, index):
@@ -135,9 +136,9 @@ class Layer:
             outs.append(n._val)
         return outs
 
-    def calculateDeltas(self, parentLayer):
+    def calculateDeltas(self, childLayer):
         for nn in self._neurons:
-            nn.calculateDelta(parentLayer._neurons)
+            nn.calculateDelta(childLayer._neurons)
 
     """ Access method """
     def __getitem__(self, index):
