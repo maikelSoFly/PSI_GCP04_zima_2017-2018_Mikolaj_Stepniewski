@@ -27,11 +27,11 @@ if __name__ == "__main__":
         3,                                              # number of layers
         [35, 15, 1],                                    # number of neurons in layers
         [35, 35, 15],                                   # number of inputs in layers
-        [Sign()(1.0), Sigm()(1.0), Sign()(0.0)],        # activation functions in layers
+        [Sign()(1.0), Sigm()(1.0), Sigm()(1.0)],        # activation functions in layers
         [
             Sign().derivative(),                        # activation function derivatives in layers
             Sigm().derivative(1.0),
-            Sign().derivative()
+            Sigm().derivative(1.0),
         ]
     )
 
@@ -69,12 +69,13 @@ if __name__ == "__main__":
             epochResults.extend(result)
 
         mseVal = MSE(epochResults, expectedForAllLetters)
-        if mseVal < 0.0001:
+        if mseVal < 0.001:
             aboveErr = False
         epoch += 1
         print(epoch, "," , mseVal)
 
 
-    test = LetterInput('F')
+    test = LetterInput('K')
     print("Letter:", test._letter)
-    print("Result:", "UPPERCASE" if ml.processLayers(test._x) == 1 else "LOWERCASE")
+    #print("Result:", "UPPERCASE" if ml.processLayers(test._x) == 1 else "LOWERCASE")
+    print("Result:", ml.processLayers(test._x))

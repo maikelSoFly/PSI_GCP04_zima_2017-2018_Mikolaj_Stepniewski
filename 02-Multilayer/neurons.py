@@ -61,7 +61,7 @@ class Neuron:
     to specify which class object belongs to, returning only 0 or 1, whereas sigmoidal neuron can return
     every value from 0 to 1. """
 
-    def __init__(self, weights, iid, activFunc, activFuncDeriv, lRate=0.5, bias=random.uniform(-1, 1)):
+    def __init__(self, weights, iid, activFunc, activFuncDeriv, lRate=0.05, bias=random.uniform(-1, 1)):
         self.__dict__['_weights'] = np.array(weights)
         self.__dict__['_activFunc'] = activFunc
         self.__dict__['_activFuncDeriv'] = activFuncDeriv
