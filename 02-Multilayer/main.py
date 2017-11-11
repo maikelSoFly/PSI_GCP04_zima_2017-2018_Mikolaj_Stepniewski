@@ -20,6 +20,7 @@ class InputVector:
         if index == 'd':
             return self._d
 
+
 if __name__ == "__main__":
 
     ml = Multilayer(
@@ -34,7 +35,7 @@ if __name__ == "__main__":
         ]
     )
 
-    # 15 letters
+    # TRAINING LETTERS
     lettersInput = [
         LetterInput('a'),
         LetterInput('p'),
@@ -56,7 +57,6 @@ if __name__ == "__main__":
     expectedForAllLetters = []
     for j in range(len(lettersInput)):
         expectedForAllLetters.append(lettersInput[j]._d)
-
     epoch = 0
     results = []
     while(aboveErr):
@@ -65,7 +65,7 @@ if __name__ == "__main__":
             result = ml.trainLayers(
                 InputVector(lettersInput[j]._x, lettersInput[j]._d)
             )
-            # result[0] is array of results from first layer
+            # here result is the final answer from the net for certain letter
             epochResults.extend(result)
 
         mseVal = MSE(epochResults, expectedForAllLetters)
@@ -75,6 +75,6 @@ if __name__ == "__main__":
         print(epoch, "," , mseVal)
 
 
-    test = LetterInput('a')
+    test = LetterInput('F')
     print("Letter:", test._letter)
     print("Result:", "UPPERCASE" if ml.processLayers(test._x) == 1 else "LOWERCASE")

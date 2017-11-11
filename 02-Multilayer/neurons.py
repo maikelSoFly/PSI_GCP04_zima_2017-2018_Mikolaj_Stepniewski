@@ -75,23 +75,22 @@ class Neuron:
         self.__dict__['_delta'] = []
 
     def process(self, inputs):
-        self._inputValues = np.array(inputs)
-        self._sum = np.dot(self._inputValues, self._weights) + self._bias
+        self._inputValues = inputs
+        self._sum = np.dot(np.array(self._inputValues), self._weights) + self._bias
 
         """ Process output """
         self._val = self._activFunc(self._sum)
         return self._val
 
-    def train(self, input):
+    def train(self):
         for i in range(len(self._weights)):
-            self._weights[i] += self._lRate * self._activFuncDeriv(self._sum) * input[i] * self._delta
+            self._weights[i] += self._lRate * self._activFuncDeriv(self._sum) * self._inputValues[i] * self._delta
 
         self._bias = self._lRate * self._activFuncDeriv(self._sum) * self._delta
 
     def calculateDelta(self, parentNeurons):
         pWeights = []
         pDeltas = []
-
         for pnn in parentNeurons:
             pWeights.append(pnn._weights[self._iid])
             pDeltas.append(pnn._delta)
@@ -129,10 +128,10 @@ class Layer:
             nnOutputs.append(nn.process(inputs))
         return nnOutputs
 
-    def trainNeurons(self, inputs):
+    def trainNeurons(self):
         outs = []
         for index, n in enumerate(self._neurons):
-            n.train(inputs)
+            n.train()
             outs.append(n._val)
         return outs
 
@@ -197,10 +196,8 @@ class Multilayer:
 
         prevOuts = None
         for i in range(self._numOfLayers):
-            if i == 0:
-                prevOuts = self._layers[i].trainNeurons(inputVector._x)
-            else:
-                prevOuts = self._layers[i].trainNeurons(prevOuts)
+            prevOuts = self._layers[i].trainNeurons()
+
         return prevOuts
 
     """ Access method """
