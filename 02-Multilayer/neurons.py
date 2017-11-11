@@ -65,7 +65,7 @@ class Neuron:
     to specify which class object belongs to, returning only 0 or 1, whereas sigmoidal neuron can return
     every value from 0 to 1. """
 
-    def __init__(self, weights, activFunc, activFuncDeriv, lRate=0.05, bias=random.uniform(-1, 1)):
+    def __init__(self, weights, iid, activFunc, activFuncDeriv, lRate=0.5, bias=random.uniform(-1, 1)):
         self.__dict__['_weights'] = np.array(weights)
         self.__dict__['_activFunc'] = activFunc
         self.__dict__['_activFuncDeriv'] = activFuncDeriv
@@ -75,25 +75,35 @@ class Neuron:
         self.__dict__['_error'] = None
         self.__dict__['_sum'] = None
         self.__dict__['_val'] = None
+        self.__dict__['_iid'] = iid
+        self.__dict__['_delta'] = []
 
-    def process(self, input):
-        self._inputValues = np.array(input)
+    def process(self, inputs):
+
+        self._inputValues = np.array(inputs)
         self._sum = np.dot(self._inputValues, self._weights) + self._bias
 
         """ Process output """
         self._val = self._activFunc(self._sum)
         return self._val
 
-    def train(self, input, target):
-        guess = self.process(input)
-        delta = guess - target
-
-        self._error = delta * self._activFuncDeriv(self._sum)
+    def train(self, input):
+        #print('training')
 
         for i in range(len(self._weights)):
-            self._weights[i] -= self._lRate * self._error * input[i]
+            self._weights[i] += self._lRate * self._activFuncDeriv(self._sum) * input[i] * self._delta
 
-        self._bias = self._lRate * self._error
+        self._bias = self._lRate * self._activFuncDeriv(self._sum) * self._delta
+
+    def calculateDelta(self, parentNeurons):
+        pWeights = []
+        pDeltas = []
+
+        for pnn in parentNeurons:
+            pWeights.append(pnn._weights[self._iid])
+            pDeltas.append(pnn._delta)
+
+        self._delta = np.dot(np.array(pWeights), np.array(pDeltas))
 
     """ Access method """
     def __getitem__(self, index):
@@ -103,38 +113,49 @@ class Neuron:
             return self._sum
         elif index == 'error':
             return self._error
+        elif index == 'delta':
+            return self._delta
 
 
 class Layer:
-    def __init__(self, numOfNeurons, numOfInputs, activFunc, activFuncDeriv):
+    def __init__(self, numOfNeurons, iid, numOfInputs, activFunc, activFuncDeriv):
         self.__dict__['_neurons'] = []
         self.__dict__['_numOfNeurons'] = numOfNeurons
         self.__dict__['_activFunc'] = activFunc
         self.__dict__['_activFuncDeriv'] = activFuncDeriv
         self.__dict__['_numOfInputs'] = numOfInputs
+        self.__dict__['_iid'] = iid
 
-        for n in range(numOfNeurons):
+        for i in range(numOfNeurons):
             w = [random.uniform(-1, 1) for _ in range(numOfInputs)]
-            self._neurons.append(Neuron(w, activFunc, activFuncDeriv))
+            self._neurons.append(Neuron(w, i, activFunc, activFuncDeriv))
 
     def processNeurons(self, inputs):
-        outputs = []
-        for n in self._neurons:
-            outputs.append(n.process(inputs))
-        return outputs
 
-    def trainNeurons(self, inputs, desired):
-        outputs = []
+        nnOutputs = []
+        for nn in self._neurons:
+            nnOutputs.append(nn.process(inputs))
+
+        return nnOutputs
+
+    def trainNeurons(self, inputs):
+        outs = []
         for index, n in enumerate(self._neurons):
-            if self._numOfNeurons > 1:
-                n.train(inputs, desired[index])
-            else:
-                n.train(inputs, desired)
-            outputs.append(n._val)
-        return outputs
+            n.train(inputs)
+            outs.append(n._val)
+        return outs
 
 
-class LayerManager:
+    def calculateDeltas(self, parentLayer):
+        for nn in self._neurons:
+            nn.calculateDelta(parentLayer._neurons)
+
+    def __getitem__(self, index):
+        if index == 'iid':
+            return self._iid
+
+
+class Multilayer:
     def __init__(self, numOfLayers, numOfNeurons, numOfInputs, activFuncs, activFuncDerivs):
         self.__dict__['_layers'] = []
         self.__dict__['_numOfLayers'] = numOfLayers
@@ -144,26 +165,58 @@ class LayerManager:
 
         for i in range(numOfLayers):
             self._layers.append(
-                Layer(numOfNeurons[i], numOfInputs[i], activFuncs[i], activFuncDerivs[i]))
+                Layer(numOfNeurons[i], i, numOfInputs[i], activFuncs[i], activFuncDerivs[i]
+            ))
+
 
     def processLayers(self, inputs):
+        lrOutputs = []
+
+        for index,  lr in enumerate(self._layers):
+            if index == 0:  # for the first layer
+                lrOutputs.append(lr.processNeurons(
+                    inputs
+                ))
+            else:   # for the rest of layers
+                lrOutputs.append(lr.processNeurons(
+                    lrOutputs[index-1]
+                ))
+        return lrOutputs[self._numOfLayers-1][0]
+
+    def trainLayers(self, inputVector):
+        lrOutputs = []
+
+        for index,  lr in enumerate(self._layers):
+            if index == 0:  # for the first layer
+                lrOutputs.append(lr.processNeurons(
+                    inputVector._x
+                ))
+            else:   # for the rest of layers
+                lrOutputs.append(lr.processNeurons(
+                    lrOutputs[index-1]
+                ))
+
+
+        """ Backpropagation: Calculate delta for every neuron """
+        finalDelta = inputVector._d - lrOutputs[self._numOfLayers-1][0]
+
+
+        for index, lr in enumerate(reversed(self._layers)):
+            if index == 0:  # for the last layer
+                lr._neurons[0]._delta = finalDelta
+            else:   # for the rest of layers
+                lr.calculateDeltas(self._layers[len(self._layers)-index])
+
         prevOuts = None
-        output = []
+
         for i in range(self._numOfLayers):
             if i == 0:
-                prevOuts = self._layers[i].processNeurons(inputs)
-                output.append(prevOuts)
-            else:
-                prevOuts = self._layers[i].processNeurons(prevOuts)
-                output.append(prevOuts)
-        return output
+                prevOuts = self._layers[i].trainNeurons(inputVector._x)
 
-    def trainLayers(self, inputVectors):
-        results = []
-        for i in range(self._numOfLayers):
-            results.append(self._layers[i].trainNeurons(
-                inputVectors[i]._x, inputVectors[i]._d))
-        return results
+            else:
+                prevOuts = self._layers[i].trainNeurons(prevOuts)
+
+        return prevOuts
 
     """ Access method """
 

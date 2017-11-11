@@ -3,16 +3,20 @@ import numpy as np
 from adaline import *
 
 """ Mean Squared Error function """
-def MSE(results,expected):
+
+
+def MSE(results, expected):
     sum = 0.0
     for i in range(len(results)):
-        sum+=(results[i]-expected[i])**2
-    return sum/len(results)
+        sum += (results[i] - expected[i])**2
+    return sum / len(results)
+
 
 class InputVector:
     def __init__(self, x, d):
         self.__dict__['_x'] = x
         self.__dict__['_d'] = d
+
     def __getitem__(self, index):
         if index == 'x':
             return self._x
@@ -33,7 +37,8 @@ if __name__ == "__main__":
         2,                                      # number of layers
         [3, 1],                                 # number of neurons in layers
         [35, 3],                                # number of inputs in layers
-        [Sign()(0.0), Sign()(0.0)],             # activation functions in layers
+        # activation functions in layers
+        [Sign()(0.0), Sign()(0.0)],
     )
 
     # 15 letters
@@ -60,13 +65,13 @@ if __name__ == "__main__":
     expectedForAllLetters = []
     for j in range(len(lettersInput)):
         expectedForAllLetters.extend(lettersInput[j]._interD)
-
     epoch = 0
 
     while(aboveErr):
         epochResults = []
         for j in range(len(lettersInput)):
-            madaline._layer.trainNeurons(lettersInput[j]._x, lettersInput[j]._interD)
+            madaline._layer.trainNeurons(
+                lettersInput[j]._x, lettersInput[j]._interD)
 
             results = lmAdaline.trainLayers([
                 # for layer 0:
@@ -78,12 +83,12 @@ if __name__ == "__main__":
             epochResults.extend(results[0])
 
         mseVal = MSE(epochResults, expectedForAllLetters)
-        if mseVal < 0.0001:
+        if mseVal < 0.001:
             aboveErr = False
         epoch += 1
-        print(epoch, "," , mseVal)
+        print(epoch, ",", mseVal)
 
-    test = LetterInput('b')
+    test = LetterInput('A')
     #print('Letter:', test._letter)
     #print("{}  ({})".format(madaline.process(test._x), madaline._thresholdFuncType.name))
     #print('3->1 Adalines', lmAdaline.processLayers(test._x))

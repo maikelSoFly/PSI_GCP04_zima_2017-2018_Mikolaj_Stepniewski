@@ -1,4 +1,4 @@
-from neuron import *
+from neurons import *
 from letters import *
 import numpy as np
 
@@ -22,12 +22,16 @@ class InputVector:
 
 if __name__ == "__main__":
 
-    lmSig = LayerManager(
-        2,                                              # number of layers
-        [3, 1],                                         # number of neurons in layers
-        [35, 3],                                        # number of inputs in layers
-        [Sigm()(1.0), Sign()(0.5)],                     # activation functions in layers
-        [Sigm().derivative(1.0), Sign().derivative()],  # activation function derivatives in layers
+    ml = Multilayer(
+        3,                                              # number of layers
+        [3, 2, 1],                                      # number of neurons in layers
+        [35, 3, 2],                                     # number of inputs in layers
+        [Sigm()(1.0), Sigm()(1.0), Sign()(0.0)],        # activation functions in layers
+        [
+            Sigm().derivative(1.0),                     # activation function derivatives in layers
+            Sigm().derivative(1.0),
+            Sign().derivative()
+        ]
     )
 
     # 15 letters
@@ -45,27 +49,24 @@ if __name__ == "__main__":
         LetterInput('c'),
         LetterInput('w'),
         LetterInput('H'),
-        LetterInput('K'),
         LetterInput('D')
     ]
     print("Epoch", ",", "MSE error")
     aboveErr = True
     expectedForAllLetters = []
     for j in range(len(lettersInput)):
-        expectedForAllLetters.extend(lettersInput[j]._interD)
+        expectedForAllLetters.append(lettersInput[j]._d)
 
     epoch = 0
+    results = []
     while(aboveErr):
         epochResults = []
         for j in range(len(lettersInput)):
-            results = lmSig.trainLayers([
-                # for layer 0:
-                InputVector(lettersInput[j]._x, lettersInput[j]._interD),
-                # for layer 1:
-                InputVector(lettersInput[j]._interD, lettersInput[j]._d)
-            ])
+            result = ml.trainLayers(
+                InputVector(lettersInput[j]._x, lettersInput[j]._d)
+            )
             # result[0] is array of results from first layer
-            epochResults.extend(results[0])
+            epochResults.extend(result)
 
         mseVal = MSE(epochResults, expectedForAllLetters)
         if mseVal < 0.0001:
@@ -74,5 +75,5 @@ if __name__ == "__main__":
         print(epoch, "," , mseVal)
 
 
-    test = LetterInput('w')
-    print("Result:",",",lmSig.processLayers(test._x))
+    test = LetterInput('K')
+    print("Result:",",",ml.processLayers(test._x))
