@@ -75,7 +75,14 @@ if __name__ == "__main__":
         print(epoch, "," , mseVal)
 
 
-    test = LetterInput('K')
-    print("Letter:", test._letter)
-    #print("Result:", "UPPERCASE" if ml.processLayers(test._x) == 1 else "LOWERCASE")
-    print("Result:", ml.processLayers(test._x))
+    """ TESTING """
+    print('\n')
+    lettersInput.append(LetterInput('K')) # Letter unknown to the net
+    for letter in lettersInput:
+        result = ml.processLayers(letter._x)
+        strResult = 'lowercase' if result < 0.5 else 'UPPERCASE'
+        print('Letter {}:\t{:.4}%\t{} '.format(
+            letter._letter,
+            100 * (1.0 - result) if result < 0.5 else 100 * result,
+            strResult
+        ))
