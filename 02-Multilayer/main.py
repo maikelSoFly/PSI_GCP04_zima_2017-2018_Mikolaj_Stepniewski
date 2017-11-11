@@ -52,6 +52,7 @@ if __name__ == "__main__":
         LetterInput('H'),
         LetterInput('D')
     ]
+    
     print("Epoch", ",", "MSE error")
     aboveErr = True
     expectedForAllLetters = []
@@ -66,7 +67,7 @@ if __name__ == "__main__":
                 InputVector(lettersInput[j]._x, lettersInput[j]._d)
             )
             # here result is the final answer from the net for certain letter
-            epochResults.extend(result)
+            epochResults.append(result)
 
         mseVal = MSE(epochResults, expectedForAllLetters)
         if mseVal < 0.001:

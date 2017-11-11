@@ -130,11 +130,8 @@ class Layer:
         return nnOutputs
 
     def trainNeurons(self):
-        outs = []
-        for index, n in enumerate(self._neurons):
+        for n in self._neurons:
             n.train()
-            outs.append(n._val)
-        return outs
 
     def calculateDeltas(self, childLayer):
         for nn in self._neurons:
@@ -188,7 +185,8 @@ class Multilayer:
 
         """ BACKPROPAGATION:
                 - Calculating delta for every neuron """
-        finalDelta = inputVector._d - lrOutputs[self._numOfLayers-1][0]
+        finalResult = lrOutputs[self._numOfLayers-1][0]
+        finalDelta = inputVector._d - finalResult
 
         for index, lr in enumerate(reversed(self._layers)):
             if index == 0:  # for the last layer
@@ -197,11 +195,10 @@ class Multilayer:
                 lr.calculateDeltas(self._layers[len(self._layers)-index])
 
         """     - Weights adjusting """
-        prevOuts = None
         for i in range(self._numOfLayers):
-            prevOuts = self._layers[i].trainNeurons()
+            self._layers[i].trainNeurons()
 
-        return prevOuts
+        return finalResult
 
     """ Access method """
     def __getitem__(self, index):
