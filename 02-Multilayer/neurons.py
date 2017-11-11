@@ -13,15 +13,13 @@ from enum import Enum
         - Sign()(0.5)
             - returns sign function for unipolar sigmoidal function
 """
-
-
 class Sign:
     def __call__(self, translation):
         def sign(x):
-            if x >= translation:
-                return 1
-            else:
+            if x < translation:
                 return 0
+            else:
+                return 1
         return sign
 
     def derivative(self):
@@ -44,8 +42,6 @@ class Sign:
             - returns sigmDeriv function
             with beta=0.5
 """
-
-
 class Sigm:
     def __call__(self, beta):
         def sigm(x):
@@ -79,7 +75,6 @@ class Neuron:
         self.__dict__['_delta'] = []
 
     def process(self, inputs):
-
         self._inputValues = np.array(inputs)
         self._sum = np.dot(self._inputValues, self._weights) + self._bias
 
@@ -88,8 +83,6 @@ class Neuron:
         return self._val
 
     def train(self, input):
-        #print('training')
-
         for i in range(len(self._weights)):
             self._weights[i] += self._lRate * self._activFuncDeriv(self._sum) * input[i] * self._delta
 
@@ -131,11 +124,9 @@ class Layer:
             self._neurons.append(Neuron(w, i, activFunc, activFuncDeriv))
 
     def processNeurons(self, inputs):
-
         nnOutputs = []
         for nn in self._neurons:
             nnOutputs.append(nn.process(inputs))
-
         return nnOutputs
 
     def trainNeurons(self, inputs):
@@ -145,11 +136,11 @@ class Layer:
             outs.append(n._val)
         return outs
 
-
     def calculateDeltas(self, parentLayer):
         for nn in self._neurons:
             nn.calculateDelta(parentLayer._neurons)
 
+    """ Access method """
     def __getitem__(self, index):
         if index == 'iid':
             return self._iid
@@ -167,7 +158,6 @@ class Multilayer:
             self._layers.append(
                 Layer(numOfNeurons[i], i, numOfInputs[i], activFuncs[i], activFuncDerivs[i]
             ))
-
 
     def processLayers(self, inputs):
         lrOutputs = []
@@ -196,10 +186,8 @@ class Multilayer:
                     lrOutputs[index-1]
                 ))
 
-
         """ Backpropagation: Calculate delta for every neuron """
         finalDelta = inputVector._d - lrOutputs[self._numOfLayers-1][0]
-
 
         for index, lr in enumerate(reversed(self._layers)):
             if index == 0:  # for the last layer
@@ -208,18 +196,14 @@ class Multilayer:
                 lr.calculateDeltas(self._layers[len(self._layers)-index])
 
         prevOuts = None
-
         for i in range(self._numOfLayers):
             if i == 0:
                 prevOuts = self._layers[i].trainNeurons(inputVector._x)
-
             else:
                 prevOuts = self._layers[i].trainNeurons(prevOuts)
-
         return prevOuts
 
     """ Access method """
-
     def __getitem__(self, index):
         if index == 'layers':
             return self._layers

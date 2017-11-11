@@ -24,11 +24,11 @@ if __name__ == "__main__":
 
     ml = Multilayer(
         3,                                              # number of layers
-        [3, 2, 1],                                      # number of neurons in layers
-        [35, 3, 2],                                     # number of inputs in layers
-        [Sigm()(1.0), Sigm()(1.0), Sign()(0.0)],        # activation functions in layers
+        [35, 15, 1],                                    # number of neurons in layers
+        [35, 35, 15],                                   # number of inputs in layers
+        [Sign()(1.0), Sigm()(1.0), Sign()(0.0)],        # activation functions in layers
         [
-            Sigm().derivative(1.0),                     # activation function derivatives in layers
+            Sign().derivative(),                        # activation function derivatives in layers
             Sigm().derivative(1.0),
             Sign().derivative()
         ]
@@ -75,5 +75,6 @@ if __name__ == "__main__":
         print(epoch, "," , mseVal)
 
 
-    test = LetterInput('K')
-    print("Result:",",",ml.processLayers(test._x))
+    test = LetterInput('a')
+    print("Letter:", test._letter)
+    print("Result:", "UPPERCASE" if ml.processLayers(test._x) == 1 else "LOWERCASE")
