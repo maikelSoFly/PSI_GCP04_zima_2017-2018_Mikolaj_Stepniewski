@@ -175,7 +175,7 @@ class Multilayer:
 
     def trainLayers(self, inputVector):
         lrOutputs = []
-
+        """ Passing letter input through the entire net """
         for index,  lr in enumerate(self._layers):
             if index == 0:  # for the first layer
                 lrOutputs.append(lr.processNeurons(
@@ -186,7 +186,8 @@ class Multilayer:
                     lrOutputs[index-1]
                 ))
 
-        """ Backpropagation: Calculate delta for every neuron """
+        """ BACKPROPAGATION:
+                - Calculating delta for every neuron """
         finalDelta = inputVector._d - lrOutputs[self._numOfLayers-1][0]
 
         for index, lr in enumerate(reversed(self._layers)):
@@ -195,6 +196,7 @@ class Multilayer:
             else:   # for the rest of layers
                 lr.calculateDeltas(self._layers[len(self._layers)-index])
 
+        """     - Weights adjusting """
         prevOuts = None
         for i in range(self._numOfLayers):
             prevOuts = self._layers[i].trainNeurons()
