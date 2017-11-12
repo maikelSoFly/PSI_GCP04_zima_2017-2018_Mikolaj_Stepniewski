@@ -158,7 +158,6 @@ class Multilayer:
 
     def processLayers(self, inputs):
         lrOutputs = []
-
         for index,  lr in enumerate(self._layers):
             if index == 0:  # for the first layer
                 lrOutputs.append(lr.processNeurons(
@@ -178,21 +177,23 @@ class Multilayer:
                 lrOutputs.append(lr.processNeurons(
                     inputVector._x
                 ))
-            else:   # for the rest of layers
+            else:           # for the rest of layers
                 lrOutputs.append(lr.processNeurons(
                     lrOutputs[index-1]
                 ))
 
         """ BACKPROPAGATION:
                 - Calculating delta for every neuron """
-        finalResult = lrOutputs[self._numOfLayers-1][0]
+        # TODO: Make arr of final deltas for net with multiple outputs
+        finalResult = lrOutputs[-1][0]  # last layer output
         finalDelta = inputVector._d - finalResult
 
         for index, lr in enumerate(reversed(self._layers)):
             if index == 0:  # for the last layer
-                lr._neurons[0]._delta = finalDelta
-            else:   # for the rest of layers
-                lr.calculateDeltas(self._layers[len(self._layers)-index])
+                for nn in lr._neurons:
+                    nn._delta = finalDelta
+            else:           # for the rest of layers
+                lr.calculateDeltas(self._layers[-index])
 
         """     - Weights adjusting """
         for i in range(self._numOfLayers):
