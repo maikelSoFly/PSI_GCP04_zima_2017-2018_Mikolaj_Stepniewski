@@ -134,6 +134,13 @@ class Layer:
             n.train()
 
     def calculateDeltas(self, childLayer):
+        """ Passing neurons(④, ⑤...) from next layer, to let neuron(①)
+        get its OUTPUT weights.
+                ↓
+        ... --①--④-- ...
+              ②\_⑤
+              ③
+        """
         for nn in self._neurons:
             nn.calculateDelta(childLayer._neurons)
 
@@ -151,6 +158,7 @@ class Multilayer:
         self.__dict__['_activFuncs'] = activFuncs
         self.__dict__['_activFuncDerivs'] = activFuncDerivs
 
+        """ Creating layers """
         for i in range(numOfLayers):
             self._layers.append(
                 Layer(numOfNeurons[i], i, numOfInputs[i], activFuncs[i], activFuncDerivs[i]
@@ -158,12 +166,13 @@ class Multilayer:
 
     def processLayers(self, inputs):
         lrOutputs = []
+        """ Passing letter input through the entire net """
         for index,  lr in enumerate(self._layers):
             if index == 0:  # for the first layer
                 lrOutputs.append(lr.processNeurons(
                     inputs
                 ))
-            else:   # for the rest of layers
+            else:           # for the rest of layers
                 lrOutputs.append(lr.processNeurons(
                     lrOutputs[index-1]
                 ))
@@ -184,7 +193,7 @@ class Multilayer:
 
         """ BACKPROPAGATION:
                 - Calculating delta for every neuron """
-        # TODO: Make arr of final deltas for net with multiple outputs
+        # TODO: Make arr of final deltas for a net with multiple outputs
         finalResult = lrOutputs[-1][0]  # last layer output
         finalDelta = inputVector._d - finalResult
 
