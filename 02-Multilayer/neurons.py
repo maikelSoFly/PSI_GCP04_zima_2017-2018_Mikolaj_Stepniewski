@@ -85,10 +85,11 @@ class Neuron:
 
     def train(self):
         """ Adjusting neuron's weights """
+        err = self._lRate * self._activFuncDeriv(self._sum) * self._delta
         for i in range(len(self._weights)):
-            self._weights[i] += self._lRate * self._activFuncDeriv(self._sum) * self._inputValues[i] * self._delta
+            self._weights[i] += err * self._inputValues[i]
 
-        self._bias = self._lRate * self._activFuncDeriv(self._sum) * self._delta
+        self._bias = err
 
     def calculateDelta(self, childNeurons):
         """ Weights & deltas from child neurons """
@@ -160,7 +161,7 @@ class Layer:
 class Multilayer:
     """ Represents entire neural net. Handles passing inputs through its layers and
     executes backpropagation algorithm. """
-    
+
     def __init__(self, numOfLayers, numOfNeurons, numOfInputs, activFuncs, activFuncDerivs):
         self.__dict__['_layers'] = []
         self.__dict__['_numOfLayers'] = numOfLayers
