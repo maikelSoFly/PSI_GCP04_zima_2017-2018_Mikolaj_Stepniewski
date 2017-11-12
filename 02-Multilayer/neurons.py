@@ -59,7 +59,8 @@ class Sigm:
 class Neuron:
     """ This is template class for both perceptron and sigmoidal neuron. Perceptron is able
     to specify which class object belongs to, returning only 0 or 1, whereas sigmoidal neuron can return
-    every value from 0 to 1. """
+    every value from 0 to 1.
+        Designed particularly for backpropagation method. """
 
     def __init__(self, weights, iid, activFunc, activFuncDeriv, lRate=0.05, bias=random.uniform(-1, 1)):
         self.__dict__['_weights'] = np.array(weights)
@@ -83,19 +84,21 @@ class Neuron:
         return self._val
 
     def train(self):
+        """ Adjusting neuron's weights """
         for i in range(len(self._weights)):
             self._weights[i] += self._lRate * self._activFuncDeriv(self._sum) * self._inputValues[i] * self._delta
 
         self._bias = self._lRate * self._activFuncDeriv(self._sum) * self._delta
 
     def calculateDelta(self, childNeurons):
-        """ Child neurons weights & deltas: """
+        """ Weights & deltas from child neurons """
         cWeights = []
         cDeltas = []
         for cnn in childNeurons:
             cWeights.append(cnn._weights[self._iid])
             cDeltas.append(cnn._delta)
 
+        """ ẟ = ∑(output weights * children deltas) """
         self._delta = np.dot(np.array(cWeights), np.array(cDeltas))
 
     """ Access method """
@@ -111,6 +114,8 @@ class Neuron:
 
 
 class Layer:
+    """ Represents certain layer of the neural net. """
+
     def __init__(self, numOfNeurons, iid, numOfInputs, activFunc, activFuncDeriv):
         self.__dict__['_neurons'] = []
         self.__dict__['_numOfNeurons'] = numOfNeurons
@@ -119,11 +124,13 @@ class Layer:
         self.__dict__['_numOfInputs'] = numOfInputs
         self.__dict__['_iid'] = iid
 
+        """ Creating neurons """
         for i in range(numOfNeurons):
             w = [random.uniform(-1, 1) for _ in range(numOfInputs)]
             self._neurons.append(Neuron(w, i, activFunc, activFuncDeriv))
 
     def processNeurons(self, inputs):
+        """ Passing letter input through the layer """
         nnOutputs = []
         for nn in self._neurons:
             nnOutputs.append(nn.process(inputs))
@@ -151,6 +158,9 @@ class Layer:
 
 
 class Multilayer:
+    """ Represents entire neural net. Handles passing inputs through its layers and
+    executes backpropagation algorithm. """
+    
     def __init__(self, numOfLayers, numOfNeurons, numOfInputs, activFuncs, activFuncDerivs):
         self.__dict__['_layers'] = []
         self.__dict__['_numOfLayers'] = numOfLayers
