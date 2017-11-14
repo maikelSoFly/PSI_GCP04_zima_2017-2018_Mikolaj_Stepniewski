@@ -55,6 +55,16 @@ class Sigm:
         sigmDeriv.__name__ += '({0:.3f})'.format(beta)
         return sigmDeriv
 
+class Linear:
+    def __call__(self):
+        def linear(x):
+            return x
+        return linear
+    def derivative(self):
+        def linearDeriv(x):
+            return 1
+        return linearDeriv
+
 
 class Neuron:
     """ This is template class for both perceptron and sigmoidal neuron. Perceptron is able
@@ -74,6 +84,8 @@ class Neuron:
         self.__dict__['_val'] = None
         self.__dict__['_iid'] = iid
         self.__dict__['_delta'] = []
+        # if activFunc == Linear()():
+        #     self._lRate = 0.5
 
     def process(self, inputs):
         self._inputValues = inputs
@@ -145,7 +157,7 @@ class Layer:
         """ Passing neurons(④, ⑤...) from next layer, to let neuron(①)
         get its OUTPUT weights.
                 ↓
-        ... --①--④-- ...
+        ... --①⎯④-- ...
               ②\_⑤
               ③
         """
@@ -188,6 +200,7 @@ class Multilayer:
                     lrOutputs[index-1]
                 ))
         return lrOutputs[self._numOfLayers-1][0]
+
 
     def trainLayers(self, inputVector):
         lrOutputs = []

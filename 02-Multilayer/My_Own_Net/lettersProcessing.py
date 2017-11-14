@@ -27,9 +27,9 @@ if __name__ == "__main__":
         3,                                              # number of layers
         [35, 15, 1],                                    # number of neurons in layers
         [35, 35, 15],                                   # number of inputs in layers
-        [Sign()(1.0), Sigm()(1.0), Sigm()(1.0)],        # activation functions in layers
+        [Sigm()(1.0), Sigm()(1.0), Sigm()(1.0)],        # activation functions in layers
         [
-            Sign().derivative(),                        # activation function derivatives in layers
+            Sigm().derivative(1.0),                        # activation function derivatives in layers
             Sigm().derivative(1.0),
             Sigm().derivative(1.0),
         ]
@@ -52,7 +52,7 @@ if __name__ == "__main__":
         LetterInput('H'),
         LetterInput('D')
     ]
-    
+
     print("Epoch", ",", "MSE error")
     aboveErr = True
     expectedForAllLetters = []
@@ -73,7 +73,8 @@ if __name__ == "__main__":
         if mseVal < 0.001:
             aboveErr = False
         epoch += 1
-        print(epoch, "," , mseVal)
+        if epoch % 10 == 0:
+            print(epoch, "," , mseVal)
 
 
     """ TESTING """
