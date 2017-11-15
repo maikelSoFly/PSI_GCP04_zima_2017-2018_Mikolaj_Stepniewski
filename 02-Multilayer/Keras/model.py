@@ -47,6 +47,9 @@ class KerasModel:
             table.add_row([valData[0][i][0], valData[0][i][1], yPredict[i][0], valData[1][i]])
         print(table)
 
+    def loadWeights(self, weightsPath):
+        self._model.load_weights(weightsPath)
+
 
     def __getitem__(self, index):
         if index == 'model':

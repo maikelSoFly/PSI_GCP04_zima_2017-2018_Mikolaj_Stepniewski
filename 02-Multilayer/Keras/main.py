@@ -41,12 +41,13 @@ tensorBoard = TensorBoard(  log_dir='./logs',
                             embeddings_metadata=None
 )
 
+""" Saves weights of the model """
 checkpointer = ModelCheckpoint(filepath='./checkpoints/weights.hdf5', verbose=1, save_best_only=True)
 
 
 
 """ Keras Model """
-kModel = KerasModel(layers, [tensorBoard])
+kModel = KerasModel(layers, [tensorBoard, checkpointer])
 kModel.createModel()
 kModel.train(
     lRate,
