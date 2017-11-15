@@ -5,6 +5,7 @@ from keras import optimizers
 from prettytable import PrettyTable
 from rastrigin import *
 
+
 """ Parameters """
 lRate = 0.05
 layers = [30, 1]
@@ -28,9 +29,16 @@ valDataInput = validationData.getInputArray()
 
 
 """ Initializing Tensor Board, which contains charts, histograms etc.  """
-tensorBoard = TensorBoard(log_dir='./logs', histogram_freq=5, batch_size=20, write_graph=True, write_grads=False, write_images=False, embeddings_freq=0, embeddings_layer_names=None, embeddings_metadata=None)
-
-
+tensorBoard = TensorBoard(  log_dir='./logs',
+                            histogram_freq=5,
+                            batch_size=20,
+                            write_graph=True,
+                            write_grads=False,
+                            write_images=False,
+                            embeddings_freq=0,
+                            embeddings_layer_names=None,
+                            embeddings_metadata=None
+)
 
 """ CREATING KERAS MODEL """
 model=Sequential()
@@ -47,7 +55,13 @@ model.compile(loss='mean_squared_error', optimizer=adam, metrics=['accuracy'])
 
 
 """ Training the net """
-model.fit(trainingDataInput, trainingDataExpectedOutput, epochs=epochs, batch_size=batchSize, validation_data=(valDataInput, valDataOutput), callbacks=[tensorBoard])
+model.fit(  trainingDataInput,
+            trainingDataExpectedOutput,
+            epochs=epochs,
+            batch_size=batchSize,
+            validation_data=(valDataInput, valDataOutput),
+            callbacks=[tensorBoard]
+)
 
 
 """ Summary table """
