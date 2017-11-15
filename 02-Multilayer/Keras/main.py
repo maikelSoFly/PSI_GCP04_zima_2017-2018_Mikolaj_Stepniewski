@@ -1,19 +1,16 @@
-from keras.models import Sequential
 from keras.callbacks import TensorBoard
 from keras.callbacks import ModelCheckpoint
-from keras.layers import Dense
-from keras import optimizers
-from prettytable import PrettyTable
 from rastrigin import *
 from model import *
+from time import gmtime, strftime
 
 
 """ Parameters """
-lRate = 0.05
+lRate = 0.01
 layers = [30, 1]
-numberOfInputs = 2000
+numberOfInputs = 1000
 epochs = 200
-batchSize = 20
+batchSize = 25
 decay = 0
 
 
@@ -30,9 +27,11 @@ valDataOutput = validationData.getOutputArray()
 valDataInput = validationData.getInputArray()
 
 """ Initializing Tensor Board, which contains charts, histograms etc.  """
-tensorBoard = TensorBoard(  log_dir='./logs',
+dateTime = strftime("%Y-%m-%d--%H:%M:%S", gmtime())
+tensorBoard = TensorBoard(  log_dir='./logs/{}_lr={:.2f}_noIn={:d}_ep={:d}_bs={:d}'.format(dateTime, lRate,
+                                                                        numberOfInputs, epochs, batchSize),
                             histogram_freq=5,
-                            batch_size=20,
+                            batch_size=batchSize,
                             write_graph=True,
                             write_grads=False,
                             write_images=True,
@@ -48,10 +47,9 @@ checkpointer = ModelCheckpoint(filepath='./checkpoints/weights.hdf5', verbose=1,
 
 """ Keras Model """
 kModel = KerasModel(layers, [tensorBoard, checkpointer])
-kModel.createModel()
+kModel.createModel(lRate, decay)
+#kModel.loadWeights('/Users/maikel/Documents/code/Python/PSI/02-Multilayer/Keras/checkpoints/weights.hdf5')
 kModel.train(
-    lRate,
-    decay,
     trainingDataInput,
     trainingDataExpectedOutput,
     epochs,

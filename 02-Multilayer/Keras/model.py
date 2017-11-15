@@ -10,7 +10,7 @@ class KerasModel:
         self.__dict__['_callbacks'] = callbacks
         self.__dict__['_model'] = None
 
-    def createModel(self):
+    def createModel(self, lRate, decay):
         model = Sequential()
         for i in range(len(self._layers)):
             if i == 0:
@@ -19,11 +19,12 @@ class KerasModel:
                 model.add(Dense(self._layers[i], activation='linear'))
             else:
                 model.add(Dense(self._layers[i], activation='sigmoid'))
+        adam = optimizers.Adam(lr=lRate, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=decay)
+        model.compile(loss='mean_squared_error', optimizer=adam, metrics=['accuracy'])
         self._model = model
 
-    def train(self, lRate, decay, trainingDataInput, trainingDataExpectedOutput, epochs, batchSize, validationData):
-        adam = optimizers.Adam(lr=lRate, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=decay)
-        self._model.compile(loss='mean_squared_error', optimizer=adam, metrics=['accuracy'])
+    def train(self, trainingDataInput, trainingDataExpectedOutput, epochs, batchSize, validationData):
+
 
         """ Training the net """
         self._model.fit(  trainingDataInput,
@@ -49,6 +50,7 @@ class KerasModel:
 
     def loadWeights(self, weightsPath):
         self._model.load_weights(weightsPath)
+
 
 
     def __getitem__(self, index):
