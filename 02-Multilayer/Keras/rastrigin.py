@@ -17,7 +17,7 @@ import random
 
 
 class RastriginInput:
-    def __init__(self, numOfPoints, numOfDimensions=2):
+    def __init__(self, numOfPoints=0, numOfDimensions=2):
         self.__dict__['_numOfPoints'] = numOfPoints
         self.__dict__['_numOfDimensions'] = numOfDimensions
         self.__dict__['_inputArray'] = None
@@ -25,7 +25,8 @@ class RastriginInput:
         self.__dict__['_from'] = -2
         self.__dict__['_to'] = 2
 
-    def initRastriginPointsRand(self):
+    def initRastriginPointsRand(self, numOfPoints):
+        self._numOfPoints = numOfPoints
         inArr = []
         outArr = []
         for i in range(self._numOfPoints):

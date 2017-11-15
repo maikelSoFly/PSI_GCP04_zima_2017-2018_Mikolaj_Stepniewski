@@ -37,8 +37,7 @@ if __name__ == "__main__":
         2,                                      # number of layers
         [3, 1],                                 # number of neurons in layers
         [35, 3],                                # number of inputs in layers
-        # activation functions in layers
-        [Sign()(0.0), Sign()(0.0)],
+        [Sign()(0.0), Sign()(0.0)],             # activation functions in layers
     )
 
     # 15 letters
