@@ -44,13 +44,13 @@ tensorBoard = TensorBoard(  log_dir='./logs/{}_lr={:.2f}_noIn={:d}_ep={:d}_bs={:
 )
 
 """ Saves weights of the model """
-checkpointer = ModelCheckpoint(filepath='./checkpoints/weights.hdf5', verbose=1, save_best_only=True)
+checkpointer = ModelCheckpoint(filepath='./best_validated/weights.hdf5', verbose=1, save_best_only=True)
 
 
 """ Keras Model """
 kModel = KerasModel(layers, [checkpointer])
 kModel.createModel(lRate, decay)
-kModel.loadWeights('./checkpoints/weights.hdf5')
+kModel.loadWeights('./best_validated/weights.hdf5')
 # kModel.train(
 #     trainingDataInput,
 #     trainingDataExpectedOutput,
