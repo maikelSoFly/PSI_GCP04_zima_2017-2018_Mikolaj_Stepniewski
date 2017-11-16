@@ -8,9 +8,9 @@ from time import gmtime, strftime
 """ Parameters """
 lRate = 0.01
 layers = [30, 1]
-numberOfInputs = 1000
-epochs = 200
-batchSize = 25
+numberOfInputs = 20000
+epochs = 25000
+batchSize = 100
 decay = 0
 
 
@@ -22,14 +22,17 @@ trainingDataExpectedOutput = trainingData.getOutputArray()
 
 """ Initializing validation data """
 validationData = RastriginInput()
-validationData.initRastriginPoints(0.5)
+validationData.initRastriginPoints(0.1)
 valDataOutput = validationData.getOutputArray()
 valDataInput = validationData.getInputArray()
 
 """ Initializing Tensor Board, which contains charts, histograms etc.  """
 dateTime = strftime("%Y-%m-%d--%H:%M:%S", gmtime())
-tensorBoard = TensorBoard(  log_dir='./logs/{}_lr={:.2f}_noIn={:d}_ep={:d}_bs={:d}'.format(dateTime, lRate,
-                                                                        numberOfInputs, epochs, batchSize),
+layerStr = ''
+for i, lr in enumerate(layers):
+    layerStr += ('+' if i > 0 else '') + str(lr)
+tensorBoard = TensorBoard(  log_dir='./logs/{}_lr={:.2f}_noIn={:d}_ep={:d}_bs={:d}--lay:{}'.format(dateTime, lRate,
+                                                                        numberOfInputs, epochs, batchSize, layerStr),
                             histogram_freq=5,
                             batch_size=batchSize,
                             write_graph=True,
@@ -45,16 +48,16 @@ checkpointer = ModelCheckpoint(filepath='./checkpoints/weights.hdf5', verbose=1,
 
 
 """ Keras Model """
-kModel = KerasModel(layers, [tensorBoard, checkpointer])
+kModel = KerasModel(layers, [checkpointer])
 kModel.createModel(lRate, decay)
-#kModel.loadWeights('/Users/maikel/Documents/code/Python/PSI/02-Multilayer/Keras/checkpoints/weights.hdf5')
-kModel.train(
-    trainingDataInput,
-    trainingDataExpectedOutput,
-    epochs,
-    batchSize,
-    (valDataInput, valDataOutput)
-)
+kModel.loadWeights('./checkpoints/weights.hdf5')
+# kModel.train(
+#     trainingDataInput,
+#     trainingDataExpectedOutput,
+#     epochs,
+#     batchSize,
+#     (valDataInput, valDataOutput)
+# )
 
 """ Summary table """
 print('\n\n\tSummary:\n', kModel._model.summary())
