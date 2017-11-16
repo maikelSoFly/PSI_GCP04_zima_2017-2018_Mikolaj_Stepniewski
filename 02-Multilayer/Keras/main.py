@@ -61,4 +61,4 @@ kModel.loadWeights('./best_validated/weights.hdf5')
 
 """ Summary table """
 print('\n\n\tSummary:\n', kModel._model.summary())
-kModel.printEvaluation(valData=[valDataInput, valDataOutput])
+kModel.printEvaluation(valData=[valDataInput, valDataOutput], CSVFormat=True)

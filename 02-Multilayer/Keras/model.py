@@ -3,6 +3,7 @@ from keras.callbacks import ModelCheckpoint
 from keras.layers import Dense
 from keras import optimizers
 from prettytable import PrettyTable
+import csv
 
 class KerasModel:
     def __init__(self, layers, callbacks=None):
@@ -35,18 +36,29 @@ class KerasModel:
                     callbacks=self._callbacks
         )
 
-    def printEvaluation(self, valData):
-        evaluation = self._model.evaluate(valData[0], valData[1])
-        print("\n%s: %.2f%%\n" % (self._model.metrics_names[1], evaluation[1]*100))
+    def printEvaluation(self, valData, CSVFormat=False):
+        if CSVFormat == False:
+            evaluation = self._model.evaluate(valData[0], valData[1])
+            print("\n%s: %.2f%%\n" % (self._model.metrics_names[1], evaluation[1]*100))
 
-        """ Testing table """
-        print("\tTesting table")
-        yPredict = self._model.predict(valData[0], verbose=0)
-        table = PrettyTable()
-        table.field_names = ['x1', 'x2', 'PREDICTED', 'EXPECTED']
-        for i in range(0, len(yPredict)):
-            table.add_row([valData[0][i][0], valData[0][i][1], yPredict[i][0], valData[1][i]])
-        print(table)
+            """ Testing table """
+            print("\tTesting table")
+            yPredict = self._model.predict(valData[0], verbose=0)
+            table = PrettyTable()
+            table.field_names = ['x1', 'x2', 'PREDICTED', 'EXPECTED']
+            for i in range(0, len(yPredict)):
+                table.add_row([valData[0][i][0], valData[0][i][1], yPredict[i][0], valData[1][i]])
+            print(table)
+        else:
+            print("\tWiriting to csv file...")
+            yPredict = self._model.predict(valData[0], verbose=0)
+            with open('./docs/best_validation_data.csv', 'w') as csvfile:
+                valWriter = csv.writer(csvfile, delimiter=',',
+                            quotechar='|', quoting=csv.QUOTE_MINIMAL)
+                valWriter.writerow(['X1', 'X2', 'PREDICTED', 'EXPECTED'])
+                for i in range(0, len(yPredict)):
+                    valWriter.writerow([valData[0][i][0], valData[0][i][1], yPredict[i][0], valData[1][i]])
+
 
     def loadWeights(self, weightsPath):
         self._model.load_weights(weightsPath)
