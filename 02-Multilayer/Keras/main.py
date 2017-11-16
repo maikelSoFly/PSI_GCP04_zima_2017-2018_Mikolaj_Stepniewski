@@ -44,7 +44,6 @@ tensorBoard = TensorBoard(  log_dir='./logs/{}_lr={:.2f}_noIn={:d}_ep={:d}_bs={:
 checkpointer = ModelCheckpoint(filepath='./checkpoints/weights.hdf5', verbose=1, save_best_only=True)
 
 
-
 """ Keras Model """
 kModel = KerasModel(layers, [tensorBoard, checkpointer])
 kModel.createModel(lRate, decay)
