@@ -1,21 +1,6 @@
 import numpy as np
 import random
 
-# class RastriginPoint:
-#     def __init__(self, xsArray, y):
-#         self.__dict__['_xsArray'] = xsArray
-#         self.__dict__['_y'] = y
-#         self.__dict__['_noDimensions'] = len(xsArray)
-#
-#     def __getitem__(self, index):
-#         if index == 'xsArray':
-#             return self._xsArray
-#         elif index == 'y':
-#             return self._y
-#         elif index == 'noDimensions':
-#             return self._noDimensions
-
-
 class RastriginInput:
     def __init__(self, numOfPoints=0, numOfDimensions=2):
         self.__dict__['_numOfPoints'] = numOfPoints
@@ -26,6 +11,8 @@ class RastriginInput:
         self.__dict__['_to'] = 2
 
     def initRastriginPointsRand(self, numOfPoints):
+        """ Creating random x1, x2...xn and f(x1,x2..xn) as a training data
+        for neural net """
         self._numOfPoints = numOfPoints
         inArr = []
         outArr = []
@@ -42,6 +29,8 @@ class RastriginInput:
         self._inputArray = inArr
 
     def initRastriginPoints(self, dx):
+        """ Creating grid of x1, x2...xn and f(x1,x2..xn) with given dx as a training data
+        for neural net """
         inArr = []
         outArr = []
         numOfPoints = int((np.absolute(self._from)+np.absolute(self._to)) / dx)

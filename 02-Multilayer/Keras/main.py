@@ -50,6 +50,7 @@ checkpointer = ModelCheckpoint(filepath='./best_validated/weights.hdf5', verbose
 """ Keras Model """
 kModel = KerasModel(layers, [checkpointer])
 kModel.createModel(lRate, decay)
+""" Loading saved trained model """
 kModel.loadWeights('./best_validated/weights.hdf5')
 # kModel.train(
 #     trainingDataInput,
