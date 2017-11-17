@@ -13,8 +13,6 @@ from enum import Enum
         - Sign()(0.5)
             - returns sign function for unipolar sigmoidal function
 """
-
-
 class Sign:
     def __call__(self, translation):
         def sign(x):
@@ -44,8 +42,6 @@ class Sign:
             - returns sigmDeriv function
             with beta=0.5
 """
-
-
 class Sigm:
     def __call__(self, beta):
         def sigm(x):
@@ -88,10 +84,12 @@ class Neuron:
         guess = self.process(input)
         delta = guess - target
 
-        self._error = delta * self._activFuncDeriv(self._sum)
+        """ Updating weights based on error.
+            Gradient learning """
+        self._error = self._lRate * delta * self._activFuncDeriv(self._sum)
 
         for i in range(len(self._weights)):
-            self._weights[i] -= self._lRate * self._error * input[i]
+            self._weights[i] -=  * self._error * input[i]
 
         self._bias = self._lRate * self._error
 
@@ -113,17 +111,21 @@ class Layer:
         self.__dict__['_activFuncDeriv'] = activFuncDeriv
         self.__dict__['_numOfInputs'] = numOfInputs
 
+        """ Creating neurons """
         for n in range(numOfNeurons):
             w = [random.uniform(-1, 1) for _ in range(numOfInputs)]
             self._neurons.append(Neuron(w, activFunc, activFuncDeriv))
 
     def processNeurons(self, inputs):
+        """ Passing data through the neurons of the layer.
+        Used for validation. """
         outputs = []
         for n in self._neurons:
             outputs.append(n.process(inputs))
         return outputs
 
     def trainNeurons(self, inputs, desired):
+        """ Passing training data through neurons of the layer. """
         outputs = []
         for index, n in enumerate(self._neurons):
             if self._numOfNeurons > 1:
@@ -135,6 +137,8 @@ class Layer:
 
 
 class LayerManager:
+    """ Class which manages single layer of neurons and Perceptron (processing
+    outputs of the layer). """
     def __init__(self, numOfLayers, numOfNeurons, numOfInputs, activFuncs, activFuncDerivs):
         self.__dict__['_layers'] = []
         self.__dict__['_numOfLayers'] = numOfLayers
@@ -142,11 +146,14 @@ class LayerManager:
         self.__dict__['_activFuncs'] = activFuncs
         self.__dict__['_activFuncDerivs'] = activFuncDerivs
 
+        """ Creating single layers """
         for i in range(numOfLayers):
             self._layers.append(
                 Layer(numOfNeurons[i], numOfInputs[i], activFuncs[i], activFuncDerivs[i]))
 
     def processLayers(self, inputs):
+        """ Passing data through layers.
+        Used for validation. """
         prevOuts = None
         output = []
         for i in range(self._numOfLayers):
@@ -159,6 +166,7 @@ class LayerManager:
         return output
 
     def trainLayers(self, inputVectors):
+        """ Passing training data through layers. """
         results = []
         for i in range(self._numOfLayers):
             results.append(self._layers[i].trainNeurons(
@@ -166,7 +174,6 @@ class LayerManager:
         return results
 
     """ Access method """
-
     def __getitem__(self, index):
         if index == 'layers':
             return self._layers

@@ -1,8 +1,8 @@
 class LetterInput():
     def __init__(self, letter):
         self.__dict__['_x'] = []
-        self.__dict__['_d'] = None
-        self.__dict__['_interD'] = None
+        self.__dict__['_d'] = None # expected output for whole task (lowercase/uppercase)
+        self.__dict__['_interD'] = None # expected outputs for 3 subtasks
         self.__dict__['_letter'] = letter
         self.getLetter()
 

@@ -9,7 +9,7 @@ def MSE(results,expected):
         sum+=(results[i]-expected[i])**2
     return sum/len(results)
 
-
+""" Class made for encapsulating input data """
 class InputVector:
     def __init__(self, x, d):
         self.__dict__['_x'] = x
@@ -22,6 +22,7 @@ class InputVector:
 
 if __name__ == "__main__":
 
+    """ Creating Sigmoidal layer with 3 neurons and Perceptron """
     lmSig = LayerManager(
         2,                                              # number of layers
         [3, 1],                                         # number of neurons in layers
@@ -30,7 +31,7 @@ if __name__ == "__main__":
         [Sigm().derivative(1.0), Sign().derivative()],  # activation function derivatives in layers
     )
 
-    # 15 letters
+    # Training letters
     lettersInput = [
         LetterInput('a'),
         LetterInput('p'),
@@ -51,6 +52,13 @@ if __name__ == "__main__":
     print("Epoch", ",", "MSE error")
     aboveErr = True
     expectedForAllLetters = []
+
+    """ Creating array od expected values for certain pixels
+        interD is 3 expected values for subtasks like:
+            - does letter exeed left margin of grid?
+            - does letter exeed right margin of grid?
+            - does letter exeed top margin of grid?
+    """
     for j in range(len(lettersInput)):
         expectedForAllLetters.extend(lettersInput[j]._interD)
 
@@ -67,12 +75,13 @@ if __name__ == "__main__":
             # result[0] is array of results from first layer
             epochResults.extend(results[0])
 
+        """ Calculating MSE error for every epoch"""
         mseVal = MSE(epochResults, expectedForAllLetters)
-        if mseVal < 0.0001:
+        if mseVal < 0.0001: # STOP IF MSE ERR IS LESS THAN 0.0001
             aboveErr = False
         epoch += 1
         print(epoch, "," , mseVal)
 
-
+    """ Validation """
     test = LetterInput('w')
     print("Result:",",",lmSig.processLayers(test._x))
