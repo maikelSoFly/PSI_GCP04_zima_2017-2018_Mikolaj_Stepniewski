@@ -89,7 +89,7 @@ class Neuron:
         self._error = self._lRate * delta * self._activFuncDeriv(self._sum)
 
         for i in range(len(self._weights)):
-            self._weights[i] -=  * self._error * input[i]
+            self._weights[i] -=  self._error * input[i]
 
         self._bias = self._lRate * self._error
 

@@ -48,17 +48,18 @@ checkpointer = ModelCheckpoint(filepath='./best_validated/weights.hdf5', verbose
 
 
 """ Keras Model """
-kModel = KerasModel(layers, [checkpointer])
+kModel = KerasModel(layers)
 kModel.createModel(lRate, decay)
 """ Loading saved trained model """
-kModel.loadWeights('./best_validated/weights.hdf5')
-# kModel.train(
-#     trainingDataInput,
-#     trainingDataExpectedOutput,
-#     epochs,
-#     batchSize,
-#     (valDataInput, valDataOutput)
-# )
+#kModel.loadWeights('./best_validated/weights.hdf5')
+kModel.train(
+    trainingDataInput,
+    trainingDataExpectedOutput,
+    epochs,
+    batchSize,
+    #(valDataInput, valDataOutput)
+    None
+)
 
 """ Summary table """
 print('\n\n\tSummary:\n', kModel._model.summary())

@@ -1,6 +1,8 @@
 from neurons import *
 from letters import *
 import numpy as np
+import math
+from prettytable import PrettyTable
 
 """ Mean Squared Error function """
 def MSE(results,expected):
@@ -27,11 +29,11 @@ if __name__ == "__main__":
         3,                                              # number of layers
         [35, 15, 1],                                    # number of neurons in layers
         [35, 35, 15],                                   # number of inputs in layers
-        [Sigm()(1.0), Sigm()(1.0), Sigm()(1.0)],        # activation functions in layers
+        [Sigm()(1.0), Sigm()(1.0), Linear()()],        # activation functions in layers
         [
-            Sigm().derivative(1.0),                        # activation function derivatives in layers
+            Sigm().derivative(1.0),                     # activation function derivatives in layers
             Sigm().derivative(1.0),
-            Sigm().derivative(1.0),
+            Linear().derivative(),
         ]
     )
 
@@ -57,14 +59,14 @@ if __name__ == "__main__":
     aboveErr = True
     expectedForAllLetters = []
     for j in range(len(lettersInput)):
-        expectedForAllLetters.append(lettersInput[j]._d)
+        expectedForAllLetters.append(ord(lettersInput[j]._letter))
     epoch = 0
     results = []
     while(aboveErr):
         epochResults = []
         for j in range(len(lettersInput)):
             result = ml.trainLayers(
-                InputVector(lettersInput[j]._x, lettersInput[j]._d)
+                InputVector(lettersInput[j]._x, ord(lettersInput[j]._letter))
             )
             # here result is the final answer from the net for certain letter
             epochResults.append(result)
@@ -74,17 +76,15 @@ if __name__ == "__main__":
             aboveErr = False
         epoch += 1
         if epoch % 10 == 0:
-            print(epoch, "," , mseVal)
+            print('epoch: ', epoch, "\tMSE err: " , mseVal)
 
 
     """ TESTING """
     print('\n')
     lettersInput.append(LetterInput('K')) # Letter unknown to the net
+    table = PrettyTable()
+    table.field_names = ['Letter', 'PREDICTED', 'RAW RESULT (ASCII)']
     for letter in lettersInput:
         result = ml.processLayers(letter._x)
-        strResult = 'lowercase' if result < 0.5 else 'UPPERCASE'
-        print('Letter {}:\t{:.4}%\t{} '.format(
-            letter._letter,
-            100 * (1.0 - result) if result < 0.5 else 100 * result,
-            strResult
-        ))
+        table.add_row([letter._letter, chr(int(round(result))), result])
+    print(table)

@@ -203,3 +203,5 @@ class LetterInput():
             return self._x
         elif index == 'd':
             return self._d
+        elif index == 'letter':
+            return self._letter

@@ -72,7 +72,7 @@ class Neuron:
     every value from 0 to 1.
         Designed particularly for backpropagation method. """
 
-    def __init__(self, weights, iid, activFunc, activFuncDeriv, lRate=0.05, bias=random.uniform(-1, 1)):
+    def __init__(self, weights, iid, activFunc, activFuncDeriv, lRate=0.01, bias=random.uniform(-1, 1)):
         self.__dict__['_weights'] = np.array(weights)
         self.__dict__['_activFunc'] = activFunc
         self.__dict__['_activFuncDeriv'] = activFuncDeriv
