@@ -65,29 +65,36 @@ class Linear:
 
 
 class HebbNeuron:
-    def __init__(self, weights, iid, activFunc, activFuncDeriv, lRate=0.01, bias=random.uniform(-1, 1)):
-        self.__dict__['_weights'] = np.array(weights)
+    def __init__(self, numOfInputs, iid, activFunc, lRate=0.01, bias=random.uniform(-1, 1)):
+        self._weights = np.array([random.uniform(-1, 1) for _ in range(numOfInputs)])
         self.__dict__['_activFunc'] = activFunc
-        self.__dict__['_activFuncDeriv'] = activFuncDeriv
         self.__dict__['_bias'] = bias
         self.__dict__['_lRate'] = lRate
-        self.__dict__['_inputValues'] = None
+        self.__dict__['_trainValues'] = None
         self.__dict__['_error'] = None
         self.__dict__['_sum'] = None
         self.__dict__['_val'] = None
         self.__dict__['_iid'] = iid
         self.__dict__['_delta'] = []
 
+
     def process(self, inputs):
-        self._inputValues = inputs
-        self._sum = np.dot(self._weights, np.array(self._inputs)) + self._bias
+        self._sum = np.dot(self._weights, np.array(inputs)) + self._bias
         self._val = self._activFunc(self._sum)
         return self._val
 
-    def train(self, inputs):
-        self._inputValues = inputs
-        self._sum = np.dot(self._weights, np.array(self._inputs)) + self._bias
-        self._val = self._activFunc(self._sum)
+    def setTrainValues(self, inputs):
+        if len(inputs) == len(self._weights):
+            self._trainValues = inputs
+        else:
+            raise Exception('Different number of weights and training set!')
 
-        for i in range(len(self._weights)):
-            self._weights[i] += self._inputs[i] * self._val * self._lRate
+    def train(self):
+        if self._trainValues != None:
+            self._sum = np.dot(self._weights, np.array(self._trainValues)) + self._bias
+            self._val = self._activFunc(self._sum)
+
+            for i in range(len(self._weights)):
+                self._weights[i] += self._trainValues[i] * self._val * self._lRate
+        else:
+            raise Exception('No training set. \n\tuse:\tsetTrainValues(array)')
