@@ -18,6 +18,18 @@ class LetterInput():
             ]
             self._d = 0
 
+        elif self._letter == 'a_noised':
+            self._x = [
+                0,  0,  0,  0,  0,
+                0,  0,  0,  0,  0,
+                0,  0,  1,  0,  0,
+                1,  0,  1,  1,  0,
+                0,  1,  0,  1,  0,
+                0,  1,  0,  1,  0,
+                0,  1,  1,  1,  1
+            ]
+            self._d = 0
+
         elif self._letter == 'b':
             self._x = [
                 1,  0,  0,  0,  0,

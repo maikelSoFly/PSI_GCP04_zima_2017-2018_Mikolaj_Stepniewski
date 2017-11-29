@@ -29,7 +29,7 @@ if __name__ == "__main__":
         3,                                              # number of layers
         [35, 15, 1],                                    # number of neurons in layers
         [35, 35, 15],                                   # number of inputs in layers
-        [Sigm()(1.0), Sigm()(1.0), Linear()()],        # activation functions in layers
+        [Sigm()(1.0), Sigm()(1.0), Linear()()],         # activation functions in layers
         [
             Sigm().derivative(1.0),                     # activation function derivatives in layers
             Sigm().derivative(1.0),
@@ -81,10 +81,10 @@ if __name__ == "__main__":
 
     """ TESTING """
     print('\n')
-    lettersInput.append(LetterInput('K')) # Letter unknown to the net
+    lettersInput.append(LetterInput('a_noised')) # Letter unknown to the net
     table = PrettyTable()
     table.field_names = ['Letter', 'PREDICTED', 'RAW RESULT (ASCII)']
     for letter in lettersInput:
-        result = ml.processLayers(letter._x)
+        result = ml.processLayers(letter['x'])
         table.add_row([letter._letter, chr(int(round(result))), result])
     print(table)
