@@ -70,7 +70,7 @@ class HebbNeuron:
         self.__dict__['_activFunc'] = activFunc
         self.__dict__['_bias'] = bias
         self.__dict__['_lRate'] = lRate
-        self.__dict__['_fRate'] = fRate
+        self.__dict__['_fRate'] = fRate     # forget rate
         self.__dict__['_trainValues'] = None
         self.__dict__['_error'] = None
         self.__dict__['_sum'] = None
@@ -95,8 +95,10 @@ class HebbNeuron:
             self._sum = np.dot(self._weights, np.array(self._trainValues)) + self._bias
             self._val = self._activFunc(self._sum)
 
-            deltaW = (1 - self._fRate) * self._val * self._lRate
+            self._error = (1 - self._fRate) * self._val * self._lRate
             for i in range(len(self._weights)):
-                self._weights[i] += self._trainValues[i] * deltaW
+                self._weights[i] += self._trainValues[i] * self._error
+                
+            self._bias = self._error
         else:
-            raise Exception('No training set. \n\tuse:\tsetTrainValues(array)')
+            raise Exception('No training set.\n\tuse:\tsetTrainValues(array)')

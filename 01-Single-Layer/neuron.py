@@ -91,7 +91,7 @@ class Neuron:
         for i in range(len(self._weights)):
             self._weights[i] -=  self._error * input[i]
 
-        self._bias = self._lRate * self._error
+        self._bias = self._error
 
     """ Access method """
     def __getitem__(self, index):
