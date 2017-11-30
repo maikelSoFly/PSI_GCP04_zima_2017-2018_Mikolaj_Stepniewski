@@ -110,13 +110,14 @@ class HebbNeuron:
         if self._trainingData != None:
             for inputs in self._trainingData:
                 output = self.process(inputs)
-
                 self._error = output * self._lRate
+
                 for i in range(len(self._weights)):
                     self._weights[i] *= 1.0 - self._fRate
-                    self._weights[i] += self._lRate * output * inputs[i]
+                    self._weights[i] += self._error * inputs[i]
+
             self._bias *= (1-self._fRate)
-            self._bias += output * self._lRate
+            self._bias += self._error
         else:
             raise Exception('No training set.\n\tuse:\tsettrainingData(array)')
 
