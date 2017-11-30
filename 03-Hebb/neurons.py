@@ -123,84 +123,84 @@ class HebbNeuron:
             raise Exception('No training set.\n\tuse:\tsetTrainValues(array)')
 
 
-class Layer:
-    def __init__(self, numOfNeurons, numOfInputs, activFunc, activFuncDeriv):
-        self.__dict__['_neurons'] = []
-        self.__dict__['_numOfNeurons'] = numOfNeurons
-        self.__dict__['_activFunc'] = activFunc
-        self.__dict__['_activFuncDeriv'] = activFuncDeriv
-        self.__dict__['_numOfInputs'] = numOfInputs
-
-        """ Creating neurons """
-        for n in range(numOfNeurons):
-            w = [random.uniform(-1, 1) for _ in range(numOfInputs)]
-            self._neurons.append(HebbNeuron(w, activFunc, activFuncDeriv))
-
-
-    def setTrainValues(self, inputs):
-        for neuron in self._neurons:
-            neuron.setTrainValues(inputs)
-
-    def processNeurons(self, inputs):
-        """ Passing data through the neurons of the layer.
-        Used for validation. """
-        outputs = []
-        for n in self._neurons:
-            outputs.append(n.process(inputs))
-        return outputs
-
-    def trainNeurons(self):
-        """ Passing training data through neurons of the layer. """
-        outputs = []
-        for index, n in enumerate(self._neurons):
-            if self._numOfNeurons > 1:
-                n.train()
-            else:
-                n.train()
-            outputs.append(n._val)
-        return outputs
-
-
-class LayerManager:
-    """ Class which manages single layer of neurons and Perceptron (processing
-    outputs of the layer). """
-    def __init__(self, numOfLayers, numOfNeurons, numOfInputs, activFuncs, activFuncDerivs):
-        self.__dict__['_layers'] = []
-        self.__dict__['_numOfLayers'] = numOfLayers
-        self.__dict__['_numOfInputs'] = numOfInputs
-        self.__dict__['_activFuncs'] = activFuncs
-        self.__dict__['_activFuncDerivs'] = activFuncDerivs
-
-        """ Creating single layers """
-        for i in range(numOfLayers):
-            self._layers.append(
-                Layer(numOfNeurons[i], numOfInputs[i], activFuncs[i], activFuncDerivs[i]))
-
-    def processLayers(self, inputs):
-        """ Passing data through layers.
-        Used for validation. """
-        prevOuts = None
-        output = []
-        for i in range(self._numOfLayers):
-            if i == 0:
-                prevOuts = self._layers[i].processNeurons(inputs)
-                output.append(prevOuts)
-            else:
-                prevOuts = self._layers[i].processNeurons(prevOuts)
-                output.append(prevOuts)
-        return output
-
-    def trainLayers(self):
-        """ Passing training data through layers. """
-        for i in range(self._numOfLayers):
-            self._layers[i].trainNeurons()
-
-    def setTrainValues(self, inputs, iid):
-        self._layer[iid].setTrainValues(inputs)
-
-    """ Access method """
-    def __getitem__(self, index):
-        if index == 'layers':
-            return self._layers
-        elif index == 'numOfLayers':
-            return self._numOfLayers
+# class Layer:
+#     def __init__(self, numOfNeurons, numOfInputs, activFunc, activFuncDeriv):
+#         self.__dict__['_neurons'] = []
+#         self.__dict__['_numOfNeurons'] = numOfNeurons
+#         self.__dict__['_activFunc'] = activFunc
+#         self.__dict__['_activFuncDeriv'] = activFuncDeriv
+#         self.__dict__['_numOfInputs'] = numOfInputs
+#
+#         """ Creating neurons """
+#         for n in range(numOfNeurons):
+#             w = [random.uniform(-1, 1) for _ in range(numOfInputs)]
+#             self._neurons.append(HebbNeuron(w, activFunc, activFuncDeriv))
+#
+#
+#     def setTrainValues(self, inputs):
+#         for neuron in self._neurons:
+#             neuron.setTrainValues(inputs)
+#
+#     def processNeurons(self, inputs):
+#         """ Passing data through the neurons of the layer.
+#         Used for validation. """
+#         outputs = []
+#         for n in self._neurons:
+#             outputs.append(n.process(inputs))
+#         return outputs
+#
+#     def trainNeurons(self):
+#         """ Passing training data through neurons of the layer. """
+#         outputs = []
+#         for index, n in enumerate(self._neurons):
+#             if self._numOfNeurons > 1:
+#                 n.train()
+#             else:
+#                 n.train()
+#             outputs.append(n._val)
+#         return outputs
+#
+#
+# class LayerManager:
+#     """ Class which manages single layer of neurons and Perceptron (processing
+#     outputs of the layer). """
+#     def __init__(self, numOfLayers, numOfNeurons, numOfInputs, activFuncs, activFuncDerivs):
+#         self.__dict__['_layers'] = []
+#         self.__dict__['_numOfLayers'] = numOfLayers
+#         self.__dict__['_numOfInputs'] = numOfInputs
+#         self.__dict__['_activFuncs'] = activFuncs
+#         self.__dict__['_activFuncDerivs'] = activFuncDerivs
+#
+#         """ Creating single layers """
+#         for i in range(numOfLayers):
+#             self._layers.append(
+#                 Layer(numOfNeurons[i], numOfInputs[i], activFuncs[i], activFuncDerivs[i]))
+#
+#     def processLayers(self, inputs):
+#         """ Passing data through layers.
+#         Used for validation. """
+#         prevOuts = None
+#         output = []
+#         for i in range(self._numOfLayers):
+#             if i == 0:
+#                 prevOuts = self._layers[i].processNeurons(inputs)
+#                 output.append(prevOuts)
+#             else:
+#                 prevOuts = self._layers[i].processNeurons(prevOuts)
+#                 output.append(prevOuts)
+#         return output
+#
+#     def trainLayers(self):
+#         """ Passing training data through layers. """
+#         for i in range(self._numOfLayers):
+#             self._layers[i].trainNeurons()
+#
+#     def setTrainValues(self, inputs, iid):
+#         self._layer[iid].setTrainValues(inputs)
+#
+#     """ Access method """
+#     def __getitem__(self, index):
+#         if index == 'layers':
+#             return self._layers
+#         elif index == 'numOfLayers':
+#             return self._numOfLayers
