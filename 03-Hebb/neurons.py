@@ -64,12 +64,10 @@ class SignSigm:
         signSigmDeriv.__name__+='({0:.3f})'.format(alfa)
         return signSigmDeriv
 
-
 def hardSign(x):
     if x<0:
         return -1.0
     return 1.0
-
 
 class Linear:
     def __call__(self):
@@ -89,7 +87,7 @@ class HebbNeuron:
         self.__dict__['_bias'] = bias
         self.__dict__['_lRate'] = lRate
         self.__dict__['_fRate'] = fRate     # forget rate
-        self.__dict__['_trainValues'] = None
+        self.__dict__['_trainingData'] = None
         self.__dict__['_error'] = None
         self.__dict__['_sum'] = None
         self.__dict__['_val'] = None
@@ -101,26 +99,26 @@ class HebbNeuron:
         self._val = self._activFunc(self._sum)
         return self._val
 
-    def setTrainValues(self, inputs):
-        for oneSet in inputs:
-            if len(oneSet) != len(self._weights):
+    def setTrainingData(self, data):
+        for inputs in data:
+            if len(inputs) != len(self._weights):
                 raise Exception('Different number of weights and training set!')
         else:
-            self._trainValues = inputs
+            self._trainingData = data
 
     def train(self):
-        if self._trainValues != None:
-            for oneSet in self._trainValues:
-                output = self.process(oneSet)
+        if self._trainingData != None:
+            for inputs in self._trainingData:
+                output = self.process(inputs)
 
                 self._error = output * self._lRate
                 for i in range(len(self._weights)):
                     self._weights[i] *= 1.0 - self._fRate
-                    self._weights[i] += self._lRate * output * oneSet[i]
+                    self._weights[i] += self._lRate * output * inputs[i]
             self._bias *= (1-self._fRate)
             self._bias += output * self._lRate
         else:
-            raise Exception('No training set.\n\tuse:\tsetTrainValues(array)')
+            raise Exception('No training set.\n\tuse:\tsettrainingData(array)')
 
 
 # class Layer:
