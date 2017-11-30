@@ -116,7 +116,7 @@ class HebbNeuron:
                     self._weights[i] *= 1.0 - self._fRate
                     self._weights[i] += self._error * inputs[i]
 
-            self._bias *= (1-self._fRate)
+            self._bias *= 1.0 - self._fRate
             self._bias += self._error
         else:
             raise Exception('No training set.\n\tuse:\tsettrainingData(array)')
