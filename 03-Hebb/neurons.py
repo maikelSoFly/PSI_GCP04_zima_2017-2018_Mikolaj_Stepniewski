@@ -43,15 +43,33 @@ class Sign:
 class Sigm:
     def __call__(self, beta):
         def sigm(x):
-            return 1.0 / (1.0 + np.exp(-beta * x))
+            return 1.0/(1.0+np.exp(-beta*x))
         sigm.__name__ += '({0:.3f})'.format(beta)
         return sigm
-
     def derivative(self, beta):
         def sigmDeriv(x):
-            return beta * np.exp(-beta * x) / ((1.0 + np.exp(-beta * x))**2)
+            return beta*np.exp(-beta*x)/((1.0+np.exp(-beta*x))**2)
         sigmDeriv.__name__ += '({0:.3f})'.format(beta)
         return sigmDeriv
+
+class SignSigm:
+    def __call__(self,alfa):
+        def signSigm(x):
+            return (2.0/(1.0+np.exp(-alfa*x)))-1.0
+        signSigm.__name__+='({0:.3f})'.format(alfa)
+        return signSigm
+    def derivative(self,alfa):
+        def signSigmDeriv(x):
+            return 2.0*alfa*np.exp(-alfa*x)/((1.0+np.exp(-alfa*x))**2)
+        signSigmDeriv.__name__+='({0:.3f})'.format(alfa)
+        return signSigmDeriv
+
+
+def hardSign(x):
+    if x<0:
+        return -1.0
+    return 1.0
+
 
 class Linear:
     def __call__(self):
@@ -65,7 +83,7 @@ class Linear:
 
 
 class HebbNeuron:
-    def __init__(self, numOfInputs, iid, activFunc, lRate=0.01, fRate=0.0, bias=random.uniform(-1, 1)):
+    def __init__(self, numOfInputs, iid, activFunc, lRate=0.01, fRate=0.003, bias=-0.5):
         self._weights = np.array([random.uniform(-1, 1) for _ in range(numOfInputs)])
         self.__dict__['_activFunc'] = activFunc
         self.__dict__['_bias'] = bias
@@ -76,29 +94,113 @@ class HebbNeuron:
         self.__dict__['_sum'] = None
         self.__dict__['_val'] = None
         self.__dict__['_iid'] = iid
-        self.__dict__['_delta'] = []
 
 
     def process(self, inputs):
-        self._sum = np.dot(self._weights, np.array(inputs)) + self._bias
+        self._sum = np.dot(self._weights, inputs) + self._bias
         self._val = self._activFunc(self._sum)
         return self._val
 
     def setTrainValues(self, inputs):
-        if len(inputs) == len(self._weights):
-            self._trainValues = inputs
+        for oneSet in inputs:
+            if len(oneSet) != len(self._weights):
+                raise Exception('Different number of weights and training set!')
         else:
-            raise Exception('Different number of weights and training set!')
+            self._trainValues = inputs
 
     def train(self):
         if self._trainValues != None:
-            self._sum = np.dot(self._weights, np.array(self._trainValues)) + self._bias
-            self._val = self._activFunc(self._sum)
+            for oneSet in self._trainValues:
+                output = self.process(oneSet)
 
-            self._error = (1 - self._fRate) * self._val * self._lRate
-            for i in range(len(self._weights)):
-                self._weights[i] += self._trainValues[i] * self._error
-                
-            self._bias = self._error
+                self._error = output * self._lRate
+                for i in range(len(self._weights)):
+                    self._weights[i] *= 1.0 - self._fRate
+                    self._weights[i] += self._lRate * output * oneSet[i]
+            self._bias *= (1-self._fRate)
+            self._bias += output * self._lRate
         else:
             raise Exception('No training set.\n\tuse:\tsetTrainValues(array)')
+
+
+class Layer:
+    def __init__(self, numOfNeurons, numOfInputs, activFunc, activFuncDeriv):
+        self.__dict__['_neurons'] = []
+        self.__dict__['_numOfNeurons'] = numOfNeurons
+        self.__dict__['_activFunc'] = activFunc
+        self.__dict__['_activFuncDeriv'] = activFuncDeriv
+        self.__dict__['_numOfInputs'] = numOfInputs
+
+        """ Creating neurons """
+        for n in range(numOfNeurons):
+            w = [random.uniform(-1, 1) for _ in range(numOfInputs)]
+            self._neurons.append(HebbNeuron(w, activFunc, activFuncDeriv))
+
+
+    def setTrainValues(self, inputs):
+        for neuron in self._neurons:
+            neuron.setTrainValues(inputs)
+
+    def processNeurons(self, inputs):
+        """ Passing data through the neurons of the layer.
+        Used for validation. """
+        outputs = []
+        for n in self._neurons:
+            outputs.append(n.process(inputs))
+        return outputs
+
+    def trainNeurons(self):
+        """ Passing training data through neurons of the layer. """
+        outputs = []
+        for index, n in enumerate(self._neurons):
+            if self._numOfNeurons > 1:
+                n.train()
+            else:
+                n.train()
+            outputs.append(n._val)
+        return outputs
+
+
+class LayerManager:
+    """ Class which manages single layer of neurons and Perceptron (processing
+    outputs of the layer). """
+    def __init__(self, numOfLayers, numOfNeurons, numOfInputs, activFuncs, activFuncDerivs):
+        self.__dict__['_layers'] = []
+        self.__dict__['_numOfLayers'] = numOfLayers
+        self.__dict__['_numOfInputs'] = numOfInputs
+        self.__dict__['_activFuncs'] = activFuncs
+        self.__dict__['_activFuncDerivs'] = activFuncDerivs
+
+        """ Creating single layers """
+        for i in range(numOfLayers):
+            self._layers.append(
+                Layer(numOfNeurons[i], numOfInputs[i], activFuncs[i], activFuncDerivs[i]))
+
+    def processLayers(self, inputs):
+        """ Passing data through layers.
+        Used for validation. """
+        prevOuts = None
+        output = []
+        for i in range(self._numOfLayers):
+            if i == 0:
+                prevOuts = self._layers[i].processNeurons(inputs)
+                output.append(prevOuts)
+            else:
+                prevOuts = self._layers[i].processNeurons(prevOuts)
+                output.append(prevOuts)
+        return output
+
+    def trainLayers(self):
+        """ Passing training data through layers. """
+        for i in range(self._numOfLayers):
+            self._layers[i].trainNeurons()
+
+    def setTrainValues(self, inputs, iid):
+        self._layer[iid].setTrainValues(inputs)
+
+    """ Access method """
+    def __getitem__(self, index):
+        if index == 'layers':
+            return self._layers
+        elif index == 'numOfLayers':
+            return self._numOfLayers
