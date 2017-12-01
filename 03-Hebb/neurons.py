@@ -81,7 +81,7 @@ class Linear:
 
 
 class HebbNeuron:
-    def __init__(self, numOfInputs, iid, activFunc, lRate=0.01, fRate=0.003, bias=-0.5):
+    def __init__(self, numOfInputs, iid, activFunc, lRate=0.01, fRate=0.03, bias=-0.5):
         self._weights = np.array([random.uniform(-1, 1) for _ in range(numOfInputs)])
         self.__dict__['_activFunc'] = activFunc
         self.__dict__['_bias'] = bias
@@ -92,7 +92,6 @@ class HebbNeuron:
         self.__dict__['_sum'] = None
         self.__dict__['_val'] = None
         self.__dict__['_iid'] = iid
-
 
     def process(self, inputs):
         self._sum = np.dot(self._weights, inputs) + self._bias
@@ -111,7 +110,7 @@ class HebbNeuron:
             for inputs in self._trainingData:
                 output = self.process(inputs)
                 self._error = output * self._lRate
-
+                
                 for i in range(len(self._weights)):
                     self._weights[i] *= 1.0 - self._fRate
                     self._weights[i] += self._error * inputs[i]

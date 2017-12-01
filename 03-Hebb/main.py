@@ -4,14 +4,26 @@ from emojis import *
 
 emoji = Emoji()
 
-trainingSet = [emoji.getEmoji('xD'), emoji.getEmoji('sad'), emoji.getEmoji('angry'),
-emoji.getEmoji('confused'), emoji.getEmoji('smile')]
+trainingSet = [
+    emoji.getEmoji('xD'),
+    emoji.getEmoji('sad'),
+    emoji.getEmoji('angry'),
+    emoji.getEmoji('confused'),
+    emoji.getEmoji('smile'),
+    emoji.getEmoji('test')
+]
 
-hebbNr = HebbNeuron(numOfInputs=64, iid=0, activFunc=SignSigm()(1.0), lRate=0.01, fRate=0.003)
+hebbNr = HebbNeuron(
+    numOfInputs=64,
+    iid=0,
+    activFunc=SignSigm()(1.0),
+    lRate=0.007,
+    fRate=0.1
+)
 
 hebbNr.setTrainingData(trainingSet)
 
-for i in range(1000):
+for i in range(10000):
     hebbNr.train()
 
 for emoji in trainingSet:
