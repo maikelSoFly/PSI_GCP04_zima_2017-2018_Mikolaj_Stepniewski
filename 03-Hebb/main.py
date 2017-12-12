@@ -2,16 +2,19 @@ from neurons import *
 import numpy as np
 from emojis import *
 
+np.random.seed(5)
+
 emoji = Emoji()
 
 trainingSet = [
-    emoji.getEmoji('xD'),
     emoji.getEmoji('sad'),
-    emoji.getEmoji('angry'),
-    emoji.getEmoji('confused'),
     emoji.getEmoji('smile'),
+    emoji.getEmoji('angry'),
+    emoji.getEmoji('xD'),
+    emoji.getEmoji('confused'),
     emoji.getEmoji('test')
 ]
+
 
 hebbNr = HebbNeuron(
     numOfInputs=64,

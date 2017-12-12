@@ -1,5 +1,5 @@
 import numpy as np
-import random
+
 
 """ Sign function which can be translated by given value. Used as
     activation function for perceptron.
@@ -81,22 +81,21 @@ class Linear:
 
 
 class HebbNeuron:
-    def __init__(self, numOfInputs, iid, activFunc, lRate=0.01, fRate=0.03, bias=-0.5):
-        self._weights = np.array([random.uniform(-1, 1) for _ in range(numOfInputs)])
+    def __init__(self, numOfInputs, iid, activFunc, lRate=0.007, fRate=0.1, bias=-0.5):
+        self._weights = np.array([np.random.uniform(-1, 1) for _ in range(numOfInputs)])
         self.__dict__['_activFunc'] = activFunc
         self.__dict__['_bias'] = bias
         self.__dict__['_lRate'] = lRate
         self.__dict__['_fRate'] = fRate     # forget rate
         self.__dict__['_trainingData'] = None
         self.__dict__['_error'] = None
-        self.__dict__['_sum'] = None
+        self.__dict__['_sum'] = 0
         self.__dict__['_val'] = None
         self.__dict__['_iid'] = iid
 
     def process(self, inputs):
         self._sum = np.dot(self._weights, inputs) + self._bias
-        self._val = self._activFunc(self._sum)
-        return self._val
+        return self._activFunc(self._sum)
 
     def setTrainingData(self, data):
         for inputs in data:
@@ -109,14 +108,14 @@ class HebbNeuron:
         if self._trainingData != None:
             for inputs in self._trainingData:
                 output = self.process(inputs)
-                self._error = output * self._lRate
-                
+                constant = self._lRate * output
+                forget = (1-self._fRate)
                 for i in range(len(self._weights)):
-                    self._weights[i] *= 1.0 - self._fRate
-                    self._weights[i] += self._error * inputs[i]
+                    self._weights[i] *= forget
+                    self._weights[i] += constant * inputs[i]
 
             self._bias *= 1.0 - self._fRate
-            self._bias += self._error
+            self._bias += constant
         else:
             raise Exception('No training set.\n\tuse:\tsettrainingData(array)')
 

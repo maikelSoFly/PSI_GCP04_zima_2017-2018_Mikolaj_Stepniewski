@@ -82,6 +82,7 @@ if __name__ == "__main__":
     """ TESTING """
     print('\n')
     lettersInput.append(LetterInput('a_noised')) # Letter unknown to the net
+    lettersInput.append(LetterInput('D_noised'))
     table = PrettyTable()
     table.field_names = ['Letter', 'PREDICTED', 'RAW RESULT (ASCII)']
     for letter in lettersInput:
