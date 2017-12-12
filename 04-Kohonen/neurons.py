@@ -9,6 +9,7 @@ class KohonenNeuron(Neuron):
         Neuron.__init__(self, numOfInputs, iid, activFunc=None, lRate=lRate, bias=0)
         self.__dict__['_winnerCounter'] = 0
         self.__dict__['_pausedCounter'] = 0
+        self.__dict__['_startWeights'] = self._weights
 
 
     def process(self, vector):
@@ -19,6 +20,9 @@ class KohonenNeuron(Neuron):
 
         for i in range(len(self._weights)):
             self._weights[i] += self._lRate * (vector[i] - self._weights[i])
+
+    def resetWeights(self):
+        self._weights = self._startWeights
 
 
 winnerLimit = 5
@@ -35,6 +39,10 @@ class KohonenNeuronGroup:
             neuron = KohonenNeuron(numOfInputs, i, lRate)
             neuron.setTrainingData(trainingData)
             self._neurons.append(neuron)
+
+    def resetWeights(self):
+        for neuron in self._neurons:
+            neuron.resetWeights()
 
     def train(self, vectors):
 
