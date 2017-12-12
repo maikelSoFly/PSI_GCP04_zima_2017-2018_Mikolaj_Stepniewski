@@ -17,9 +17,8 @@ class KohonenNeuron(Neuron):
         return self._sum
 
     def train(self, vector):
-
         for i in range(len(self._weights)):
-            self._weights[i] += self._lRate * (vector[i] - self._weights[i])
+            self._weights[i] += self._lRate * self._sum*(vector[i] - self._weights[i])
 
     def resetWeights(self):
         self._weights = self._startWeights
@@ -28,7 +27,7 @@ class KohonenNeuron(Neuron):
 winnerLimit = 5
 pauseFor = 3
 class KohonenNeuronGroup:
-    def __init__(self, numOfInputs, numOfNeurons, trainingData, lRate=0.01):
+    def __init__(self, numOfInputs, numOfNeurons, trainingData, lRate=0.0001):
         self.__dict__['_numOfNeurons'] = numOfNeurons
         self.__dict__['_lRate'] = lRate
         self.__dict__['_numOfInputs'] = numOfInputs

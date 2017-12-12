@@ -1,5 +1,7 @@
 import sys
 import random
+from math import ceil
+from math import sqrt
 # Add the activFuncs folder path to the sys.path list
 sys.path.append('../lib')
 from activFuncs import *
@@ -10,18 +12,41 @@ dataUrl = 'http://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.da
 speciesNames = ['Iris-setosa', 'Iris-versicolor', 'Iris-virginica']
 
 
+
+def averageParameters(species, n):
+    sum = [0.0, 0.0, 0.0, 0.0]
+    for row in species:
+        sum[0] += row[0]
+        sum[1] += row[1]
+        sum[2] += row[2]
+        sum[3] += row[3]
+
+    return [ceil((sum[0]/n)*100)/100, ceil((sum[1]/n)*100)/100, ceil((sum[2]/n)*100)/100, ceil((sum[3]/n)*100)/100]
+
+
 trainingData = DataReader(url=dataUrl, delimiter=',').parse()
 
+def normalizator(arr):
+    sum = 0.0
+    for el in arr:
+        sum += el**2
+    return sqrt(sum)
 
 
-for i in range(len(trainingData)):
-        trainingData[i].pop()
-        trainingData[i] = [float(i) for i in trainingData[i]]
+for j in range(len(trainingData)):
+        trainingData[j].pop()
+        trainingData[j] = [float(i) for i in trainingData[j]]
+        trainingData[j] = [i/normalizator(trainingData[j]) for i in trainingData[j]]
 
 speciesArr = np.split(np.array(trainingData), 3)
 
 
-kohonenGroup = KohonenNeuronGroup(numOfInputs=4, numOfNeurons=35, trainingData=trainingData, lRate=0.007)
+kohonenGroup = KohonenNeuronGroup(numOfInputs=4, numOfNeurons=20, trainingData=trainingData, lRate=0.0001)
+
+print('\naverages:')
+for species in speciesArr:
+    print(averageParameters(species, 50))
+print()
 
 winners = []
 for j, species in enumerate(speciesArr):
@@ -30,6 +55,12 @@ for j, species in enumerate(speciesArr):
     winners.append(winner)
     print(speciesNames[j], ' finished...')
     kohonenGroup.resetWeights()
+
+
+
+
+
+print('\n\nresults:')
 
 for i, winner in enumerate(winners):
     print('idd: ', winner._iid, winner._weights, '\t', speciesNames[i])
