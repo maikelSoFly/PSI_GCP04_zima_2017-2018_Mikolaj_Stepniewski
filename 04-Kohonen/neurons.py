@@ -13,7 +13,6 @@ class KohonenNeuron(Neuron):
 
     def process(self, vector):
         self._sum = np.dot(self._weights, vector)
-
         return self._sum
 
     def train(self, vector):
@@ -22,7 +21,7 @@ class KohonenNeuron(Neuron):
             self._weights[i] += self._lRate * (vector[i] - self._weights[i])
 
 
-winnerLimit = 10000
+winnerLimit = 5
 pauseFor = 3
 class KohonenNeuronGroup:
     def __init__(self, numOfInputs, numOfNeurons, trainingData, lRate=0.01):
@@ -37,21 +36,17 @@ class KohonenNeuronGroup:
             neuron.setTrainingData(trainingData)
             self._neurons.append(neuron)
 
-    def train(self):
+    def train(self, vectors):
 
-        for vector in self._trainingData:
+        for vector in vectors:
             winner = None
             for neuron in self._neurons:
-                u = neuron.process(vector)
+                neuron.process(vector)
                 if winner == None:
                     winner = neuron
-                else:
-                    if u > winner._sum and neuron._winnerCounter <= winnerLimit:
+                elif winner != None:
+                    if neuron._sum > winner._sum:
                         winner = neuron
                 winner._winnerCounter += 1
 
-            print('Winner is:\t', winner._iid, 'with u:\t', winner._sum)
-            winner.train(vector)
-
-        for neuron in self._neurons:
-            neuron._winnerCounter = 0
+        return winner
