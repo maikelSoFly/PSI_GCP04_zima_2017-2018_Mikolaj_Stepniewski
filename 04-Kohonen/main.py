@@ -20,28 +20,28 @@ def averageParameters(species, n):
         sum[1] += row[1]
         sum[2] += row[2]
         sum[3] += row[3]
-
     return [ceil((sum[0]/n)*100)/100, ceil((sum[1]/n)*100)/100, ceil((sum[2]/n)*100)/100, ceil((sum[3]/n)*100)/100]
+
+def normalizeInputs(arr):
+    sum = 0.0
+    for el in arr:
+        sum += el**2
+    return [i/sqrt(sum) for i in arr]
+
 
 
 trainingData = DataReader(url=dataUrl, delimiter=',').parse()
 
-def normalizator(arr):
-    sum = 0.0
-    for el in arr:
-        sum += el**2
-    return sqrt(sum)
-
-
 for j in range(len(trainingData)):
-        trainingData[j].pop()
-        trainingData[j] = [float(i) for i in trainingData[j]]
-        trainingData[j] = [i/normalizator(trainingData[j]) for i in trainingData[j]]
+        trainingData[j].pop()                                   # remove species name
+        trainingData[j] = [float(i) for i in trainingData[j]]   # cast str elements to float
+        trainingData[j] = normalizeInputs(trainingData[j])      # normalize elements to 0...1 values
 
-speciesArr = np.split(np.array(trainingData), 3)
+speciesArr = np.split(np.array(trainingData), 3)                # split in 3 different species arrays
 
 
-kohonenGroup = KohonenNeuronGroup(numOfInputs=4, numOfNeurons=20, trainingData=trainingData, lRate=0.0001)
+kohonenGroup = KohonenNeuronGroup(numOfInputs=4, numOfNeurons=4, trainingData=trainingData, lRate=0.5)
+
 
 print('\naverages:')
 for species in speciesArr:
@@ -50,17 +50,13 @@ print()
 
 winners = []
 for j, species in enumerate(speciesArr):
-    for i in range(1000):
+    for i in range(50000):
         winner = kohonenGroup.train(species)
     winners.append(winner)
     print(speciesNames[j], ' finished...')
     kohonenGroup.resetWeights()
 
 
-
-
-
 print('\n\nresults:')
-
 for i, winner in enumerate(winners):
     print('idd: ', winner._iid, winner._weights, '\t', speciesNames[i])

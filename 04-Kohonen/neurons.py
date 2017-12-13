@@ -18,7 +18,7 @@ class KohonenNeuron(Neuron):
 
     def train(self, vector):
         for i in range(len(self._weights)):
-            self._weights[i] += self._lRate * self._sum*(vector[i] - self._weights[i])
+            self._weights[i] += self._lRate * (vector[i] - self._weights[i])
 
     def resetWeights(self):
         self._weights = self._startWeights
@@ -44,7 +44,6 @@ class KohonenNeuronGroup:
             neuron.resetWeights()
 
     def train(self, vectors):
-
         for vector in vectors:
             winner = None
             for neuron in self._neurons:
