@@ -33,8 +33,7 @@ class KohonenNeuron(Neuron):
         self._weights = self._startWeights
 
 
-winnerLimit = 5
-pauseFor = 3
+
 class KohonenNeuronGroup:
     def __init__(self, numOfInputs, numOfNeurons, trainingData, lRate=0.0001):
         self.__dict__['_numOfNeurons'] = numOfNeurons
@@ -42,6 +41,9 @@ class KohonenNeuronGroup:
         self.__dict__['_numOfInputs'] = numOfInputs
         self.__dict__['_neurons'] = []
         self.__dict__['_trainingData'] = trainingData
+        self.__dict__['_alfaD'] = 0.8
+        self.__dict__['_alfaI'] = 1.03
+        self.__dict__['_kW'] = 0.5
 
         for i in range(numOfNeurons):
             neuron = KohonenNeuron(numOfInputs, i, lRate)

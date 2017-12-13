@@ -40,7 +40,7 @@ for j in range(len(trainingData)):
 speciesArr = np.split(np.array(trainingData), 3)                # split in 3 different species arrays
 
 
-kohonenGroup = KohonenNeuronGroup(numOfInputs=4, numOfNeurons=225, trainingData=trainingData, lRate=0.1)
+kohonenGroup = KohonenNeuronGroup(numOfInputs=4, numOfNeurons=225, trainingData=trainingData, lRate=0.01)
 
 
 print('\naverages:')
@@ -49,14 +49,18 @@ for species in speciesArr:
 print()
 
 winners = []
+epochs = 1000
 for j, species in enumerate(speciesArr):
-    for i in range(1000):
+    print('\n----------')
+    for i in range(epochs):
+        if i % (epochs/10) == 0:
+            print('-', end='', flush=True)
         winner = kohonenGroup.train(species)
     winners.append(winner)
-    print(speciesNames[j], ' finished...')
+    print('\n\n', speciesNames[j], ' finished...')
     kohonenGroup.resetWeights()
 
 
 print('\n\nresults:')
 for i, winner in enumerate(winners):
-    print('idd: ', winner._iid, winner._weights, '\t', speciesNames[i])
+    print('idd: ', winner._iid, '\t', winner._weights, '\t', speciesNames[i])
