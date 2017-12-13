@@ -3,6 +3,7 @@ import sys
 sys.path.append('../lib')
 from neuron import *
 from math import sqrt
+import copy
 
 def computeDistance(v1, v2):
     sum = 0.0
@@ -19,7 +20,7 @@ class KohonenNeuron(Neuron):
         Neuron.__init__(self, numOfInputs, iid, activFunc=None, lRate=lRate, bias=0)
         self.__dict__['_winnerCounter'] = 0
         self.__dict__['_pausedCounter'] = 0
-        self.__dict__['_startWeights'] = self._weights
+        self.__dict__['_startWeights'] = self._weights[:]
 
     def process(self, vector):
         self._sum = computeDistance(vector, self._weights)
@@ -30,7 +31,7 @@ class KohonenNeuron(Neuron):
             self._weights[i] += self._lRate * (vector[i] - self._weights[i])
 
     def resetWeights(self):
-        self._weights = self._startWeights
+        self._weights = self._startWeights[:]
 
 
 
