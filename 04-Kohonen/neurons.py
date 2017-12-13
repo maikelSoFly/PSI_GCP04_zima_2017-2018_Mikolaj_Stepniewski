@@ -2,6 +2,16 @@ import sys
 # Add the neuron folder path to the sys.path list
 sys.path.append('../lib')
 from neuron import *
+from math import sqrt
+
+def computeDistance(v1, v2):
+    sum = 0.0
+    if len(v1) != len(v2):
+        raise Exception('Lenghts of vectors are not equal')
+    else:
+        for i in range(len(v1)):
+            sum += (v1[i] - v2[i])**2
+    return sqrt(sum)
 
 
 class KohonenNeuron(Neuron):
@@ -11,9 +21,8 @@ class KohonenNeuron(Neuron):
         self.__dict__['_pausedCounter'] = 0
         self.__dict__['_startWeights'] = self._weights
 
-
     def process(self, vector):
-        self._sum = np.dot(self._weights, vector)
+        self._sum = computeDistance(vector, self._weights)
         return self._sum
 
     def train(self, vector):
@@ -51,7 +60,7 @@ class KohonenNeuronGroup:
                 if winner == None:
                     winner = neuron
                 elif winner != None:
-                    if neuron._sum > winner._sum:
+                    if neuron._sum < winner._sum:
                         winner = neuron
                 winner._winnerCounter += 1
 
