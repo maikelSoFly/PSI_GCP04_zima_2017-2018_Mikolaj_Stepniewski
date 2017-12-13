@@ -63,4 +63,4 @@ for j, species in enumerate(speciesArr):
 
 print('\n\nresults:')
 for i, winner in enumerate(winners):
-    print('idd: ', winner._iid, '\t', winner._weights, '\t', speciesNames[i])
+    print('idd:', winner._iid, '\t', winner._weights, '\t', speciesNames[i])
