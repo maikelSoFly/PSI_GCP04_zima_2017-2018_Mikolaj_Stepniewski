@@ -1,6 +1,6 @@
 import sys
 # Add the neuron folder path to the sys.path list
-sys.path.append('../lib')
+sys.path.append('../inc')
 from neuron import *
 
 

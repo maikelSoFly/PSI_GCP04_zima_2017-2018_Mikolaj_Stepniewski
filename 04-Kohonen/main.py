@@ -2,7 +2,7 @@ import sys
 import random
 from math import ceil
 # Add the activFuncs folder path to the sys.path list
-sys.path.append('../lib')
+sys.path.append('../inc')
 from supportFunctions import *
 from neurons import *
 from data import *
