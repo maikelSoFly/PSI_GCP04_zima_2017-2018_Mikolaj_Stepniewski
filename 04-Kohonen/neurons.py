@@ -3,7 +3,6 @@ import sys
 sys.path.append('../lib')
 from neuron import *
 from math import sqrt
-import copy
 
 def computeDistance(v1, v2):
     sum = 0.0
@@ -16,7 +15,7 @@ def computeDistance(v1, v2):
 
 
 class KohonenNeuron(Neuron):
-    def __init__(self, numOfInputs, iid, lRate=0.01):
+    def __init__(self, numOfInputs, iid, lRate=0.1):
         Neuron.__init__(self, numOfInputs, iid, activFunc=None, lRate=lRate, bias=0)
         self.__dict__['_winnerCounter'] = 0
         self.__dict__['_pausedCounter'] = 0
@@ -34,9 +33,12 @@ class KohonenNeuron(Neuron):
         self._weights = self._startWeights[:]
 
 
+""" Simple WTA for now...
 
+    Winner is neuron with least distance
+    between weights vector and input vector """
 class KohonenNeuronGroup:
-    def __init__(self, numOfInputs, numOfNeurons, trainingData, lRate=0.0001):
+    def __init__(self, numOfInputs, numOfNeurons, trainingData, lRate=0.1):
         self.__dict__['_numOfNeurons'] = numOfNeurons
         self.__dict__['_lRate'] = lRate
         self.__dict__['_numOfInputs'] = numOfInputs
@@ -44,7 +46,7 @@ class KohonenNeuronGroup:
         self.__dict__['_trainingData'] = trainingData
         self.__dict__['_alfaD'] = 0.8
         self.__dict__['_alfaI'] = 1.03
-        self.__dict__['_kW'] = 0.5
+        self.__dict__['_kW'] = 0.01
 
         for i in range(numOfNeurons):
             neuron = KohonenNeuron(numOfInputs, i, lRate)
