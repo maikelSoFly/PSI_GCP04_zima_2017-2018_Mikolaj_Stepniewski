@@ -7,7 +7,7 @@ from math import sqrt
 def computeDistance(v1, v2):
     sum = 0.0
     if len(v1) != len(v2):
-        raise Exception('Lenghts of vectors are not equal')
+        raise Exception('\t[!]\tLenghts of vectors are not equal.')
     else:
         for i in range(len(v1)):
             sum += (v1[i] - v2[i])**2
