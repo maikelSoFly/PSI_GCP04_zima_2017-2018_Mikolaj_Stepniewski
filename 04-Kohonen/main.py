@@ -11,7 +11,7 @@ from data import *
 dataUrl = 'http://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data'
 speciesNames = ['Iris-setosa', 'Iris-versicolor', 'Iris-virginica']
 
-
+epochs = 1000
 
 def averageParameters(species, n=50):
     sum = [0.0, 0.0, 0.0, 0.0]
@@ -43,13 +43,16 @@ speciesArr = np.split(np.array(trainingData), 3)                # split in 3 dif
 kohonenGroup = KohonenNeuronGroup(numOfInputs=4, numOfNeurons=225, trainingData=trainingData, lRate=0.07)
 
 
+print('lRate: {:.2f}\tneurons in group: {:d}\tepochs: {:d}'.format(
+    kohonenGroup._lRate, kohonenGroup._numOfNeurons, epochs
+))
+
 print('\n•Averages:')
 for i, species in enumerate(speciesArr):
     print(averageParameters(species), '\t', speciesNames[i])
 print()
 
 winners = []
-epochs = 1000
 for j, species in enumerate(speciesArr):
     print('\n', speciesNames[j])
     print('....................')
