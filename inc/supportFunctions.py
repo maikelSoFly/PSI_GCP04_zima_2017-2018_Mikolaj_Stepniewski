@@ -95,10 +95,10 @@ def euklidesDistance(v1, v2):
             sum += (v1[i] - v2[i])**2
     return sqrt(sum)
 
-def simpleLearnCorrection(la):
+def simpleLearnCorrection(lambd):
     t=-1
     def f():
         nonlocal t
         t+=1
-        return np.exp(-t/la)
+        return np.exp(-t/lambd)
     return f

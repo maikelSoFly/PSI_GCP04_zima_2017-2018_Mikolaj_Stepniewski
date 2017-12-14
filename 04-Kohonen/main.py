@@ -10,7 +10,8 @@ from data import *
 dataUrl = 'http://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data'
 speciesNames = ['Iris-setosa', 'Iris-versicolor', 'Iris-virginica']
 
-epochs = 100
+epochs = 1000
+lRateLambda = 100*50
 
 def averageParameters(species, n=50):
     sum = [0.0, 0.0, 0.0, 0.0]
@@ -44,13 +45,13 @@ kohonenGroup = KohonenNeuronGroup(
     numOfNeurons=225,
     processFunc=euklidesDistance,
     trainingData=trainingData,
-    lRateFunc=simpleLearnCorrection(20*50),
+    lRateFunc=simpleLearnCorrection(lRateLambda),
     lRate=0.1
 )
 
 
-print('lRate: {:.2f}\tneurons in group: {:d}\tepochs: {:d}'.format(
-    kohonenGroup._lRate, kohonenGroup._numOfNeurons, epochs
+print('lRate0: {:.2f}\tlRateLambda: {}\tneurons in group: {:d}\tepochs: {:d}'.format(
+    kohonenGroup._lRate, lRateLambda, kohonenGroup._numOfNeurons, epochs
 ))
 
 print('\n•Averages:')
