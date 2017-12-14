@@ -10,8 +10,8 @@ from data import *
 dataUrl = 'http://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data'
 speciesNames = ['Iris-setosa', 'Iris-versicolor', 'Iris-virginica']
 
-epochs = 1000
-lRateLambda = 100*50
+epochs = 100
+lRateLambda = 100*150
 
 def averageParameters(species, n=50):
     sum = [0.0, 0.0, 0.0, 0.0]
@@ -27,6 +27,36 @@ def normalizeInputs(arr):
     for el in arr:
         sum += el**2
     return [i/sqrt(sum) for i in arr]
+
+def trainSeparately(kohonenGroup, speciesArr):
+    winners = []
+    for j, species in enumerate(speciesArr):
+        print('\n', speciesNames[j])
+        print('....................')
+        for i in range(epochs):
+            if i != 0 and i % (epochs/10) == 0:
+                print('▇', end=' ', flush=True)
+            """ Train with one species at a time """
+            winner = kohonenGroup.train(species)
+        winners.append(winner)  # winner for each species
+        kohonenGroup.resetWeights()
+        """ ^ reset weights between species """
+        print('▇\tdone')
+
+    return winners
+
+def trainSimultaneously(kohonenGroup, trainingData):
+    # TODO
+    winners = []
+    print('....................')
+    for i in range(epochs):
+        if i != 0 and i % (epochs/10) == 0:
+            print('▇', end=' ', flush=True)
+        """ Train with one species at a time """
+        winner = kohonenGroup.train(trainingData)
+        winners.append(winner)  # winner for each species
+    return winners
+
 
 
 
@@ -59,21 +89,19 @@ for i, species in enumerate(speciesArr):
     print('{} \t{}'.format(averageParameters(species), speciesNames[i]))
 print()
 
-winners = []
-for j, species in enumerate(speciesArr):
-    print('\n', speciesNames[j])
-    print('....................')
-    for i in range(epochs):
-        if i != 0 and i % (epochs/10) == 0:
-            print('▇', end=' ', flush=True)
-        """ Train with one species at a time """
-        winner = kohonenGroup.train(species)
-    winners.append(winner)  # winner for each species
-    kohonenGroup.resetWeights()
-    """ ^ reset weights between species """
-    print('▇\tdone')
+
+#
+# winners = trainSeparately(kohonenGroup, speciesArr)
+# print('\n\n•Results:')
+# for i, winner in enumerate(winners):
+#     print('idd: {} \t{}\t{}'.format(winner._iid, winner._weights, speciesNames[i]))
+
+#
+trainSimultaneously(kohonenGroup, trainingData)
 
 
-print('\n\n•Results:')
-for i, winner in enumerate(winners):
-    print('idd: {} \t{}\t{}'.format(winner._iid, winner._weights, speciesNames[i]))
+# mostWinners = sorted(kohonenGroup._neurons, key=lambda x: x._winnerCounter, reverse=False)
+#
+# top5 = mostWinners[-10:]
+# for n in top5:
+#     print(n._iid, n._winnerCounter)

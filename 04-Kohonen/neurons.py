@@ -48,9 +48,17 @@ class KohonenNeuronGroup:
         for neuron in self._neurons:
             neuron.resetWeights()
 
+    def resetWins(self):
+        for neuron in self._neurons:
+            neuron._winnerCounter = 0
+
 
     def train(self, vectors):
-        for vector in vectors:
+        winner = None
+        for i, vector in enumerate(vectors):
+            if i % 50 == 0:
+                print(i, "^^^^^")
+
             winner = None
             for neuron in self._neurons:
                 neuron.process(vector)
@@ -59,7 +67,10 @@ class KohonenNeuronGroup:
                 elif winner != None:
                     if neuron._sum < winner._sum:
                         winner = neuron
+
                 winner._winnerCounter += 1
+            print(winner._iid)
+
 
         self._currentLRate = self._lRate * self._lRateFunc()
 
