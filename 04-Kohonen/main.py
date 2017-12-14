@@ -13,7 +13,7 @@ speciesNames = ['Iris-setosa', 'Iris-versicolor', 'Iris-virginica']
 
 
 
-def averageParameters(species, n):
+def averageParameters(species, n=50):
     sum = [0.0, 0.0, 0.0, 0.0]
     for row in species:
         sum[0] += row[0]
@@ -40,27 +40,30 @@ for j in range(len(trainingData)):
 speciesArr = np.split(np.array(trainingData), 3)                # split in 3 different species arrays
 
 
-kohonenGroup = KohonenNeuronGroup(numOfInputs=4, numOfNeurons=225, trainingData=trainingData, lRate=0.1)
+kohonenGroup = KohonenNeuronGroup(numOfInputs=4, numOfNeurons=225, trainingData=trainingData, lRate=0.07)
 
 
-print('\naverages:')
-for species in speciesArr:
-    print(averageParameters(species, 50))
+print('\n•Averages:')
+for i, species in enumerate(speciesArr):
+    print(averageParameters(species), '\t', speciesNames[i])
 print()
 
 winners = []
 epochs = 1000
 for j, species in enumerate(speciesArr):
-    print('\n- - - - - - - - - -')
+    print('\n', speciesNames[j])
+    print('....................')
     for i in range(epochs):
-        if i % (epochs/10) == 0:
-            print('-', end=' ', flush=True)
+        if i != 0 and i % (epochs/10) == 0:
+            print('▇', end=' ', flush=True)
+        """ Train with one species at a time """
         winner = kohonenGroup.train(species)
-    winners.append(winner)
-    print('\n\n', speciesNames[j], ' finished...')
+    winners.append(winner)  # winner for each species
     kohonenGroup.resetWeights()
+    """ ^ reset weights between species """
+    print('▇\tdone')
 
 
-print('\n\nresults:')
+print('\n\n•Results:')
 for i, winner in enumerate(winners):
     print('idd:', winner._iid, '\t', winner._weights, '\t', speciesNames[i])
