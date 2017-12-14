@@ -1,17 +1,16 @@
 import sys
 import random
 from math import ceil
-from math import sqrt
 # Add the activFuncs folder path to the sys.path list
 sys.path.append('../lib')
-from activFuncs import *
+from supportFunctions import *
 from neurons import *
 from data import *
 
 dataUrl = 'http://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data'
 speciesNames = ['Iris-setosa', 'Iris-versicolor', 'Iris-virginica']
 
-epochs = 1000
+epochs = 100
 
 def averageParameters(species, n=50):
     sum = [0.0, 0.0, 0.0, 0.0]
@@ -40,7 +39,14 @@ for j in range(len(trainingData)):
 speciesArr = np.split(np.array(trainingData), 3)                # split in 3 different species arrays
 
 
-kohonenGroup = KohonenNeuronGroup(numOfInputs=4, numOfNeurons=225, trainingData=trainingData, lRate=0.07)
+kohonenGroup = KohonenNeuronGroup(
+    numOfInputs=4,
+    numOfNeurons=225,
+    processFunc=euklidesDistance,
+    trainingData=trainingData,
+    lRateFunc=simpleLearnCorrection(20*50),
+    lRate=0.1
+)
 
 
 print('lRate: {:.2f}\tneurons in group: {:d}\tepochs: {:d}'.format(
@@ -49,7 +55,7 @@ print('lRate: {:.2f}\tneurons in group: {:d}\tepochs: {:d}'.format(
 
 print('\n•Averages:')
 for i, species in enumerate(speciesArr):
-    print(averageParameters(species), '\t', speciesNames[i])
+    print('{} \t{}'.format(averageParameters(species), speciesNames[i]))
 print()
 
 winners = []
@@ -69,4 +75,4 @@ for j, species in enumerate(speciesArr):
 
 print('\n\n•Results:')
 for i, winner in enumerate(winners):
-    print('idd:', winner._iid, '\t', winner._weights, '\t', speciesNames[i])
+    print('idd: {} \t{}\t{}'.format(winner._iid, winner._weights, speciesNames[i]))
