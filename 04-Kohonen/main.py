@@ -9,7 +9,7 @@ speciesNames = ['Iris-setosa', 'Iris-versicolor', 'Iris-virginica']
 
 """ Training parameters """
 epochs = 20
-lRateLambda = (epochs/10)*150
+decay = (epochs/10)*150
 neuronGrid = [16, 16]
 lRate = 0.1
 
@@ -80,13 +80,13 @@ kohonenGroup = KohonenNeuronGroup(
     numOfNeurons=neuronGrid,
     processFunc=euklidesDistance,
     trainingData=trainingData,
-    lRateFunc=simpleLRateCorrection(lRateLambda),
+    lRateFunc=simpleLRateCorrection(decay),
     lRate=lRate
 )
 
 
-print('lRate0: {:.2f}\tlRateLambda: {}\tneurons in group: {:d}\tepochs: {:d}'.format(
-    kohonenGroup._lRate, lRateLambda, kohonenGroup['totalNumOfNeurons'], epochs
+print('lRate0: {:.2f}\tlr decay: {}\tneurons in group: {:d}\tepochs: {:d}'.format(
+    kohonenGroup._lRate, decay, kohonenGroup['totalNumOfNeurons'], epochs
 ))
 
 print('\n•Averages:')
