@@ -34,24 +34,27 @@ class KohonenNeuronGroup:
         self.__dict__['_numOfNeurons'] = numOfNeurons
         self.__dict__['_lRate'] = lRate
         self.__dict__['_numOfInputs'] = numOfInputs
-        self.__dict__['_neurons'] = []
+        self.__dict__['_neurons'] = None
         self.__dict__['_trainingData'] = trainingData
         self.__dict__['_processFunc'] = processFunc
         self.__dict__['_lRateFunc'] = lRateFunc
         self.__dict__['_currentLRate'] = None
 
-        for i in range(numOfNeurons):
-            neuron = KohonenNeuron(numOfInputs, processFunc, i, lRate)
-            neuron.setTrainingData(trainingData)
-            self._neurons.append(neuron)
+        self._neurons = [[KohonenNeuron(numOfInputs, processFunc, i*numOfNeurons[0]+j, lRate)
+            for i in range(numOfNeurons[0])]
+            for j in range(numOfNeurons[1])
+        ]
+
 
     def resetWeights(self):
-        for neuron in self._neurons:
-            neuron.resetWeights()
+        for row in self._neurons:
+            for neuron in row:
+                neuron.resetWeights()
 
     def resetWins(self):
-        for neuron in self._neurons:
-            neuron._winnerCounter = 0
+        for row in self._neurons:
+            for neuron in row:
+                neuron._winnerCounter = 0
 
 
     def train(self, vectors, retMostCommon=False):
@@ -59,15 +62,16 @@ class KohonenNeuronGroup:
         winners = []
         for i, vector in enumerate(vectors):
             winner = None
-            for neuron in self._neurons:
-                neuron.process(vector)
-                if winner == None:
-                    winner = neuron
-                elif winner != None:
-                    if neuron._sum < winner._sum:
+            for row in self._neurons:
+                for neuron in row:
+                    neuron.process(vector)
+                    if winner == None:
                         winner = neuron
+                    elif winner != None:
+                        if neuron._sum < winner._sum:
+                            winner = neuron
 
-                winner._winnerCounter += 1
+                    winner._winnerCounter += 1
 
             winners.append(winner)
 
@@ -77,3 +81,8 @@ class KohonenNeuronGroup:
             return Counter(winners).most_common(1)[0][0]
 
         return np.split(np.array(winners), 3)
+
+    """ Access methods """
+    def __getitem__(self, key):
+        if key == 'totalNumOfNeurons':
+            return sum(len(x) for x in self._neurons)

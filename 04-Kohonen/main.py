@@ -1,6 +1,7 @@
 import sys
 import random
 from math import ceil
+from math import floor
 # Add the activFuncs folder path to the sys.path list
 sys.path.append('../inc')
 from supportFunctions import *
@@ -11,7 +12,7 @@ import time
 dataUrl = 'http://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data'
 speciesNames = ['Iris-setosa', 'Iris-versicolor', 'Iris-virginica']
 
-epochs = 1000
+epochs = 100
 lRateLambda = 100*150
 
 def averageParameters(species, n=50):
@@ -24,7 +25,6 @@ def averageParameters(species, n=50):
     return [ceil((sum[0]/n)*100)/100, ceil((sum[1]/n)*100)/100, ceil((sum[2]/n)*100)/100, ceil((sum[3]/n)*100)/100]
 
 
-
 def trainSeparately(kohonenGroup, speciesArr):
     winners = []
     start = time.time()
@@ -32,7 +32,7 @@ def trainSeparately(kohonenGroup, speciesArr):
         print('\n', speciesNames[j])
         print('....................')
         for i in range(epochs):
-            if i != 0 and i % (epochs/10) == 0:
+            if i != 0 and i % (floor(epochs/10)) == 0:
                 print('▇', end=' ', flush=True)
             """ Train with one species at a time """
             winner = kohonenGroup.train(species, retMostCommon=True)
@@ -49,7 +49,7 @@ def trainSimultaneously(kohonenGroup, trainingData):
     print('....................')
     start = time.time()
     for i in range(epochs):
-        if i != 0 and i % (epochs/10) == 0:
+        if i != 0 and i % (floor(epochs/10)) == 0:
             print('▇', end=' ', flush=True)
         """ Train with one species at a time """
         winners = kohonenGroup.train(trainingData)
@@ -72,7 +72,7 @@ speciesArr = np.split(np.array(trainingData), 3)                # split in 3 dif
 
 kohonenGroup = KohonenNeuronGroup(
     numOfInputs=4,
-    numOfNeurons=289,
+    numOfNeurons=[17, 17],
     processFunc=euklidesDistance,
     trainingData=trainingData,
     lRateFunc=simpleLearnCorrection(lRateLambda),
@@ -81,7 +81,7 @@ kohonenGroup = KohonenNeuronGroup(
 
 
 print('lRate0: {:.2f}\tlRateLambda: {}\tneurons in group: {:d}\tepochs: {:d}'.format(
-    kohonenGroup._lRate, lRateLambda, kohonenGroup._numOfNeurons, epochs
+    kohonenGroup._lRate, lRateLambda, kohonenGroup['totalNumOfNeurons'], epochs
 ))
 
 print('\n•Averages:')
@@ -104,7 +104,7 @@ print('\n')
 winners = trainSimultaneously(kohonenGroup, trainingData)
 print('\n\n•Results:')
 for i, row in enumerate(winners):
-    print('•{}:'.format(speciesNames[i]))
+    print(' {}:'.format(speciesNames[i]))
     for j, n in enumerate(row):
         if j != 0 and j % 10 == 0:
             print()
