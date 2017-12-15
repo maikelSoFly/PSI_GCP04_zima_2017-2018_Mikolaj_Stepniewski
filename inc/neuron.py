@@ -7,7 +7,7 @@ class Neuron:
         self.__dict__['_bias'] = bias
         self.__dict__['_lRate'] = lRate
         self.__dict__['_error'] = None
-        self.__dict__['_sum'] = 0
+        self.__dict__['_sum'] = None
         self.__dict__['_val'] = None
         self.__dict__['_iid'] = iid
 

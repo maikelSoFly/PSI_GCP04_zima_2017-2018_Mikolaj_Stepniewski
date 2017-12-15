@@ -12,8 +12,18 @@ import time
 dataUrl = 'http://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data'
 speciesNames = ['Iris-setosa', 'Iris-versicolor', 'Iris-virginica']
 
-epochs = 100
-lRateLambda = 100*150
+""" Training parameters """
+epochs = 1000
+lRateLambda = (epochs/100)*150
+neuronGrid = [18, 18]
+lRate = 0.1
+
+
+def countUniqueItems(arr):
+    return len(Counter(arr).keys())
+
+def getMostCommonItem(arr):
+    return Counter(arr).most_common(1)[0][0]
 
 def averageParameters(species, n=50):
     sum = [0.0, 0.0, 0.0, 0.0]
@@ -72,11 +82,11 @@ speciesArr = np.split(np.array(trainingData), 3)                # split in 3 dif
 
 kohonenGroup = KohonenNeuronGroup(
     numOfInputs=4,
-    numOfNeurons=[17, 17],
+    numOfNeurons=neuronGrid,
     processFunc=euklidesDistance,
     trainingData=trainingData,
     lRateFunc=simpleLRateCorrection(lRateLambda),
-    lRate=0.1
+    lRate=lRate
 )
 
 
@@ -94,19 +104,31 @@ print()
 
 """ Training """
 
-winners = trainSeparately(kohonenGroup, speciesArr)
-print('\n\n•Results:\t(Most common winner-neurons)')
-for i, winner in enumerate(winners):
-    print('idd: {} \t{}\t{}'.format(winner._iid, winner._weights, speciesNames[i]))
-
-print('\n')
+# winners = trainSeparately(kohonenGroup, speciesArr)
+# print('\n\n•Results:\t(Most common winner-neurons)')
+# for i, winner in enumerate(winners):
+#     print('idd: {} \t{}\t{}'.format(winner._iid, winner._weights, speciesNames[i]))
+#
+# print('\n')
 
 winners = trainSimultaneously(kohonenGroup, trainingData)
+numOfActiveNeurons = countUniqueItems(winners)
+winners = np.split(np.array(winners), 3)
+
 print('\n\n•Results:')
 for i, row in enumerate(winners):
-    print(' {}:'.format(speciesNames[i]))
+    print(' {}:\n   active neurons: {:d}\n   most common neuron: {:d}\n'.format(speciesNames[i], countUniqueItems(row), getMostCommonItem(row)._iid))
     for j, n in enumerate(row):
         if j != 0 and j % 10 == 0:
             print()
         print(n._iid, end=' ', flush=False)
     print('\n')
+
+mostActiveNeurons = [getMostCommonItem(row) for row in winners]
+
+print('\n•Most common active neurons for species:')
+for i, neuron in enumerate(mostActiveNeurons):
+    print('idd: {} \t{}\t{}'.format(neuron._iid, neuron._weights, speciesNames[i]))
+
+print('\n•Total active neurons in group: {:d}'.format(numOfActiveNeurons))
+print('\n•lRate: {:.5f}'.format(kohonenGroup._currentLRate))

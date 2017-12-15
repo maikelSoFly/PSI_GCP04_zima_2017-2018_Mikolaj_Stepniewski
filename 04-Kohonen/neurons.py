@@ -12,10 +12,11 @@ class KohonenNeuron(Neuron):
         self.__dict__['_pausedCounter'] = 0
         self.__dict__['_processFunc'] = processFunc
         self.__dict__['_startWeights'] = self._weights[:]
+        self.__dict__['_dist'] = None
 
     def process(self, vector):
-        self._sum = self._processFunc(vector, self._weights)
-        return self._sum
+        self._dist = self._processFunc(vector, self._weights)
+        return self._dist
 
     def train(self, vector):
         for i in range(len(self._weights)):
@@ -58,7 +59,6 @@ class KohonenNeuronGroup:
 
 
     def train(self, vectors, retMostCommon=False):
-        winner = None
         winners = []
         for i, vector in enumerate(vectors):
             winner = None
@@ -68,7 +68,7 @@ class KohonenNeuronGroup:
                     if winner == None:
                         winner = neuron
                     elif winner != None:
-                        if neuron._sum < winner._sum:
+                        if neuron._dist < winner._dist:
                             winner = neuron
 
                     winner._winnerCounter += 1
@@ -80,7 +80,7 @@ class KohonenNeuronGroup:
         if retMostCommon:
             return Counter(winners).most_common(1)[0][0]
 
-        return np.split(np.array(winners), 3)
+        return winners
 
 
     """ Access methods """
