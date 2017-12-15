@@ -57,7 +57,7 @@ class KohonenNeuronGroup:
             for neuron in row:
                 neuron._winnerCounter = 0
 
-    def adjustLRate(self, lRate):
+    def setLRate(self, lRate):
         self._currentLRate = lRate
         for row in self._neurons:
             for neuron in row:
@@ -76,12 +76,13 @@ class KohonenNeuronGroup:
                     elif winner != None:
                         if neuron._dist < winner._dist:
                             winner = neuron
+                            winner.train(vector)
 
                     winner._winnerCounter += 1
 
             winners.append(winner)
 
-        self.adjustLRate(self._lRate * self._lRateFunc())
+        self.setLRate(self._lRate * self._lRateFunc())
 
         if retMostCommon:
             return Counter(winners).most_common(1)[0][0]
