@@ -102,3 +102,9 @@ def simpleLearnCorrection(lambd):
         t+=1
         return np.exp(-t/lambd)
     return f
+
+def normalizeInputs(arr):
+    sum = 0.0
+    for el in arr:
+        sum += el**2
+    return [i/sqrt(sum) for i in arr]

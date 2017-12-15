@@ -55,9 +55,13 @@ class KohonenNeuronGroup:
 
     def train(self, vectors):
         winner = None
+        winners = []
+        speciesWinners = []
         for i, vector in enumerate(vectors):
-            if i % 50 == 0:
-                print(i, "^^^^^")
+
+            if i != 0 and i % 50 == 0:
+                winners.append(speciesWinners)
+                speciesWinners = []
 
             winner = None
             for neuron in self._neurons:
@@ -69,9 +73,11 @@ class KohonenNeuronGroup:
                         winner = neuron
 
                 winner._winnerCounter += 1
-            print(winner._iid)
 
+            speciesWinners.append(winner)
+
+        winners.append(speciesWinners)
 
         self._currentLRate = self._lRate * self._lRateFunc()
 
-        return winner
+        return winners

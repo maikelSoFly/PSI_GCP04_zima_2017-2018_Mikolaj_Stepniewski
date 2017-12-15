@@ -6,11 +6,12 @@ sys.path.append('../inc')
 from supportFunctions import *
 from neurons import *
 from data import *
+import time
 
 dataUrl = 'http://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data'
 speciesNames = ['Iris-setosa', 'Iris-versicolor', 'Iris-virginica']
 
-epochs = 100
+epochs = 1000
 lRateLambda = 100*150
 
 def averageParameters(species, n=50):
@@ -22,14 +23,11 @@ def averageParameters(species, n=50):
         sum[3] += row[3]
     return [ceil((sum[0]/n)*100)/100, ceil((sum[1]/n)*100)/100, ceil((sum[2]/n)*100)/100, ceil((sum[3]/n)*100)/100]
 
-def normalizeInputs(arr):
-    sum = 0.0
-    for el in arr:
-        sum += el**2
-    return [i/sqrt(sum) for i in arr]
+
 
 def trainSeparately(kohonenGroup, speciesArr):
     winners = []
+    start = time.time()
     for j, species in enumerate(speciesArr):
         print('\n', speciesNames[j])
         print('....................')
@@ -41,20 +39,21 @@ def trainSeparately(kohonenGroup, speciesArr):
         winners.append(winner)  # winner for each species
         kohonenGroup.resetWeights()
         """ ^ reset weights between species """
-        print('▇\tdone')
+        end = time.time()
+        print('▇\tdone\tin: {:.3f} sec'.format(end-start))
 
     return winners
 
 def trainSimultaneously(kohonenGroup, trainingData):
-    # TODO
-    winners = []
     print('....................')
+    start = time.time()
     for i in range(epochs):
         if i != 0 and i % (epochs/10) == 0:
             print('▇', end=' ', flush=True)
         """ Train with one species at a time """
-        winner = kohonenGroup.train(trainingData)
-        winners.append(winner)  # winner for each species
+        winners = kohonenGroup.train(trainingData)
+    end = time.time()
+    print('▇\tdone\tin: {:.3f} sec'.format(end-start))
     return winners
 
 
@@ -72,7 +71,7 @@ speciesArr = np.split(np.array(trainingData), 3)                # split in 3 dif
 
 kohonenGroup = KohonenNeuronGroup(
     numOfInputs=4,
-    numOfNeurons=225,
+    numOfNeurons=289,
     processFunc=euklidesDistance,
     trainingData=trainingData,
     lRateFunc=simpleLearnCorrection(lRateLambda),
@@ -95,13 +94,15 @@ print()
 # print('\n\n•Results:')
 # for i, winner in enumerate(winners):
 #     print('idd: {} \t{}\t{}'.format(winner._iid, winner._weights, speciesNames[i]))
-
 #
-trainSimultaneously(kohonenGroup, trainingData)
 
+winners = trainSimultaneously(kohonenGroup, trainingData)
 
-# mostWinners = sorted(kohonenGroup._neurons, key=lambda x: x._winnerCounter, reverse=False)
-#
-# top5 = mostWinners[-10:]
-# for n in top5:
-#     print(n._iid, n._winnerCounter)
+print()
+for i, row in enumerate(winners):
+    print('•{}:'.format(speciesNames[i]))
+    for j, n in enumerate(row):
+        if j != 0 and j % 10 == 0:
+            print()
+        print(n._iid, end=' ', flush=False)
+    print('\n')
