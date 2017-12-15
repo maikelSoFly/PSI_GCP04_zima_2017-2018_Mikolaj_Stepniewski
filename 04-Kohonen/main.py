@@ -13,9 +13,9 @@ dataUrl = 'http://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.da
 speciesNames = ['Iris-setosa', 'Iris-versicolor', 'Iris-virginica']
 
 """ Training parameters """
-epochs = 1000
-lRateLambda = (epochs/100)*150
-neuronGrid = [18, 18]
+epochs = 11
+lRateLambda = (epochs/100)*149
+neuronGrid = [10, 10]
 lRate = 0.1
 
 
@@ -42,7 +42,7 @@ def trainSeparately(kohonenGroup, speciesArr):
         print('\n', speciesNames[j])
         print('....................')
         for i in range(epochs):
-            if i != 0 and i % (floor(epochs/10)) == 0:
+            if i != 0 and i % (round(epochs/10)) == 0:
                 print('▇', end=' ', flush=True)
             """ Train with one species at a time """
             winner = kohonenGroup.train(species, retMostCommon=True)
@@ -59,7 +59,7 @@ def trainSimultaneously(kohonenGroup, trainingData):
     print('....................')
     start = time.time()
     for i in range(epochs):
-        if i != 0 and i % (floor(epochs/10)) == 0:
+        if i != 0 and i % (round(epochs/10)) == 0:
             print('▇', end=' ', flush=True)
         """ Train with one species at a time """
         winners = kohonenGroup.train(trainingData)
@@ -128,7 +128,7 @@ mostActiveNeurons = [getMostCommonItem(row) for row in winners]
 
 print('\n•Most common active neurons for species:')
 for i, neuron in enumerate(mostActiveNeurons):
-    print('idd: {} \t{}\t{}'.format(neuron._iid, neuron._weights, speciesNames[i]))
+    print('idd: {}  \t{}\t{}'.format(neuron._iid, neuron._weights, speciesNames[i]))
 
 print('\n•Total active neurons in group: {:d}'.format(numOfActiveNeurons))
 print('\n•lRate: {:.5f}'.format(kohonenGroup._currentLRate))

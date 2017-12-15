@@ -20,7 +20,7 @@ class KohonenNeuron(Neuron):
 
     def train(self, vector):
         for i in range(len(self._weights)):
-            self._weights[i] += self._lRate * (vector[i] - self._weights[i])
+            self._weights[i] += self._currentLRate * (vector[i] - self._weights[i])
 
     def resetWeights(self):
         self._weights = self._startWeights[:]
