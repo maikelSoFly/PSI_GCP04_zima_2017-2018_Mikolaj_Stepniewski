@@ -75,7 +75,7 @@ kohonenGroup = KohonenNeuronGroup(
     numOfNeurons=[17, 17],
     processFunc=euklidesDistance,
     trainingData=trainingData,
-    lRateFunc=simpleLearnCorrection(lRateLambda),
+    lRateFunc=simpleLRateCorrection(lRateLambda),
     lRate=0.1
 )
 

@@ -1,6 +1,7 @@
 import numpy as np
 from math import sqrt
 
+
 """ Sign function which can be translated by given value. Used as
     activation function for perceptron.
 
@@ -95,7 +96,7 @@ def euklidesDistance(v1, v2):
             sum += (v1[i] - v2[i])**2
     return sqrt(sum)
 
-def simpleLearnCorrection(lambd):
+def simpleLRateCorrection(lambd):
     t=-1
     def f():
         nonlocal t

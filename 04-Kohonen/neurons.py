@@ -40,7 +40,7 @@ class KohonenNeuronGroup:
         self.__dict__['_lRateFunc'] = lRateFunc
         self.__dict__['_currentLRate'] = None
 
-        self._neurons = [[KohonenNeuron(numOfInputs, processFunc, i*numOfNeurons[0]+j, lRate)
+        self._neurons = [[KohonenNeuron(numOfInputs, processFunc, iid=i*numOfNeurons[0]+j, lRate=lRate)
             for i in range(numOfNeurons[0])]
             for j in range(numOfNeurons[1])
         ]
@@ -81,6 +81,7 @@ class KohonenNeuronGroup:
             return Counter(winners).most_common(1)[0][0]
 
         return np.split(np.array(winners), 3)
+
 
     """ Access methods """
     def __getitem__(self, key):
