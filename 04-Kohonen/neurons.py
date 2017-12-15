@@ -20,7 +20,7 @@ class KohonenNeuron(Neuron):
 
     def train(self, vector):
         for i in range(len(self._weights)):
-            self._weights[i] += self._currentLRate * (vector[i] - self._weights[i])
+            self._weights[i] += self._lRate * (vector[i] - self._weights[i])
 
     def resetWeights(self):
         self._weights = self._startWeights[:]
@@ -57,6 +57,12 @@ class KohonenNeuronGroup:
             for neuron in row:
                 neuron._winnerCounter = 0
 
+    def adjustLRate(self, lRate):
+        self._currentLRate = lRate
+        for row in self._neurons:
+            for neuron in row:
+                neuron._lRate = lRate
+
 
     def train(self, vectors, retMostCommon=False):
         winners = []
@@ -75,7 +81,7 @@ class KohonenNeuronGroup:
 
             winners.append(winner)
 
-        self._currentLRate = self._lRate * self._lRateFunc()
+        self.adjustLRate(self._lRate * self._lRateFunc())
 
         if retMostCommon:
             return Counter(winners).most_common(1)[0][0]
