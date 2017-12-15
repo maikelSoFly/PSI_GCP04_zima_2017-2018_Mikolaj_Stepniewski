@@ -76,10 +76,10 @@ class KohonenNeuronGroup:
                     elif winner != None:
                         if neuron._dist < winner._dist:
                             winner = neuron
-                            winner.train(vector)
 
-                    winner._winnerCounter += 1
 
+            winner._winnerCounter += 1
+            winner.train(vector)
             winners.append(winner)
 
         self.setLRate(self._lRate * self._lRateFunc())
