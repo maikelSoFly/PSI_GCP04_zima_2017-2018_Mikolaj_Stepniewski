@@ -1,7 +1,8 @@
 import sys
-# Add the neuron folder path to the sys.path list
-sys.path.append('../inc')
+# Add the include folder path to the sys.path list
+sys.path.append('../include')
 from neuron import *
+from supportFunctions import *
 from collections import Counter
 
 

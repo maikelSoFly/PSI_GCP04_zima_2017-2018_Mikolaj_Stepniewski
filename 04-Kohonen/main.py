@@ -1,10 +1,5 @@
-import sys
-import random
 from math import ceil
 from math import floor
-# Add the activFuncs folder path to the sys.path list
-sys.path.append('../inc')
-from supportFunctions import *
 from neurons import *
 from data import *
 import time
