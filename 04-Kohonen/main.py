@@ -13,9 +13,9 @@ dataUrl = 'http://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.da
 speciesNames = ['Iris-setosa', 'Iris-versicolor', 'Iris-virginica']
 
 """ Training parameters """
-epochs = 10
-lRateLambda = 1*149
-neuronGrid = [17, 17]
+epochs = 20
+lRateLambda = (epochs/10)*150
+neuronGrid = [16, 16]
 lRate = 0.1
 
 

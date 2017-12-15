@@ -77,8 +77,8 @@ class KohonenNeuronGroup:
                         if neuron._dist < winner._dist:
                             winner = neuron
 
-
             winner._winnerCounter += 1
+            """ Winner Takes All """
             winner.train(vector)
             winners.append(winner)
 
