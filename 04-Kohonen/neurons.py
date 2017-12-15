@@ -2,6 +2,7 @@ import sys
 # Add the neuron folder path to the sys.path list
 sys.path.append('../inc')
 from neuron import *
+from collections import Counter
 
 
 class KohonenNeuron(Neuron):
@@ -53,16 +54,10 @@ class KohonenNeuronGroup:
             neuron._winnerCounter = 0
 
 
-    def train(self, vectors):
+    def train(self, vectors, retMostCommon=False):
         winner = None
         winners = []
-        speciesWinners = []
         for i, vector in enumerate(vectors):
-
-            if i != 0 and i % 50 == 0:
-                winners.append(speciesWinners)
-                speciesWinners = []
-
             winner = None
             for neuron in self._neurons:
                 neuron.process(vector)
@@ -74,10 +69,11 @@ class KohonenNeuronGroup:
 
                 winner._winnerCounter += 1
 
-            speciesWinners.append(winner)
-
-        winners.append(speciesWinners)
+            winners.append(winner)
 
         self._currentLRate = self._lRate * self._lRateFunc()
 
-        return winners
+        if retMostCommon:
+            return Counter(winners).most_common(1)[0][0]
+
+        return np.split(np.array(winners), 3)

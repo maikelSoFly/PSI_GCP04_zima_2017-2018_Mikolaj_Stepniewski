@@ -35,7 +35,7 @@ def trainSeparately(kohonenGroup, speciesArr):
             if i != 0 and i % (epochs/10) == 0:
                 print('▇', end=' ', flush=True)
             """ Train with one species at a time """
-            winner = kohonenGroup.train(species)
+            winner = kohonenGroup.train(species, retMostCommon=True)
         winners.append(winner)  # winner for each species
         kohonenGroup.resetWeights()
         """ ^ reset weights between species """
@@ -45,6 +45,7 @@ def trainSeparately(kohonenGroup, speciesArr):
     return winners
 
 def trainSimultaneously(kohonenGroup, trainingData):
+    print('\n {} + {} + {}'.format(speciesNames[0], speciesNames[1], speciesNames[2]))
     print('....................')
     start = time.time()
     for i in range(epochs):
@@ -89,16 +90,19 @@ for i, species in enumerate(speciesArr):
 print()
 
 
-#
-# winners = trainSeparately(kohonenGroup, speciesArr)
-# print('\n\n•Results:')
-# for i, winner in enumerate(winners):
-#     print('idd: {} \t{}\t{}'.format(winner._iid, winner._weights, speciesNames[i]))
-#
+
+
+""" Training """
+
+winners = trainSeparately(kohonenGroup, speciesArr)
+print('\n\n•Results:\t(Most common winner-neurons)')
+for i, winner in enumerate(winners):
+    print('idd: {} \t{}\t{}'.format(winner._iid, winner._weights, speciesNames[i]))
+
+print('\n')
 
 winners = trainSimultaneously(kohonenGroup, trainingData)
-
-print()
+print('\n\n•Results:')
 for i, row in enumerate(winners):
     print('•{}:'.format(speciesNames[i]))
     for j, n in enumerate(row):
