@@ -1,3 +1,13 @@
+# @Author: Mikołaj Stępniewski <maikelSoFly>
+# @Date:   2017-12-12T19:04:33+01:00
+# @Email:  mikolaj.stepniewski1@gmail.com
+# @Filename: data.py
+# @Last modified by:   maikelSoFly
+# @Last modified time: 2017-12-16T13:21:04+01:00
+# @Copyright: Copyright © 2017 Mikołaj Stępniewski. All rights reserved.
+
+
+
 import requests
 from contextlib import closing
 import csv

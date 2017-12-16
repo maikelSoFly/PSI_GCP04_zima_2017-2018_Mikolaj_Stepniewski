@@ -1,3 +1,13 @@
+# @Author: Mikołaj Stępniewski <maikelSoFly>
+# @Date:   2017-12-16T02:09:12+01:00
+# @Email:  mikolaj.stepniewski1@gmail.com
+# @Filename: main.py
+# @Last modified by:   maikelSoFly
+# @Last modified time: 2017-12-16T13:20:42+01:00
+# @Copyright: Copyright © 2017 Mikołaj Stępniewski. All rights reserved.
+
+
+
 from math import ceil
 from math import floor
 from neurons import *
@@ -11,7 +21,7 @@ speciesNames = ['Iris-setosa', 'Iris-versicolor', 'Iris-virginica']
 """ Training parameters """
 epochs = 10
 decay = (epochs/10)*150
-neuronGrid = [16, 16]
+neuronGrid = [17, 17]
 lRate = 0.1
 
 

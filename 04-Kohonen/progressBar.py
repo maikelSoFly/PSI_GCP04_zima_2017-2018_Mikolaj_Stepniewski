@@ -1,3 +1,13 @@
+# @Author: Mikołaj Stępniewski <maikelSoFly>
+# @Date:   2017-12-16T10:40:44+01:00
+# @Email:  mikolaj.stepniewski1@gmail.com
+# @Filename: progressBar.py
+# @Last modified by:   maikelSoFly
+# @Last modified time: 2017-12-16T13:20:50+01:00
+# @Copyright: Copyright © 2017 Mikołaj Stępniewski. All rights reserved.
+
+
+
 from math import ceil
 from math import floor
 import time
@@ -10,7 +20,7 @@ class ProgressBar:
         self.__dict__['_mod'] = None
         self.__dict__['_times'] = None
         self.__dict__['_lineChar'] = '_'
-        self.__dict__['_char'] = '█'
+        self.__dict__['_char'] = '▋'
         self.__dict__['_startTime'] = None
         self.__dict__['_elapsedTime'] = None
 
@@ -25,7 +35,7 @@ class ProgressBar:
 
         print(self._lineChar * self._l, end = '', flush=True)
         print()
-        
+
         self._startTime = time.time()
         self._elapsedTime = None
 
@@ -39,4 +49,4 @@ class ProgressBar:
         if self._t == self._x-1:
             self._elapsedTime = time.time() - self._startTime
             print(self._char * self._restTimes, end = '')
-            print('   done\t(in: {:.3f} sec)'.format(self._elapsedTime))
+            print('   DONE\t({:.3f} s)'.format(self._elapsedTime))

@@ -1,3 +1,13 @@
+# @Author: Mikołaj Stępniewski <maikelSoFly>
+# @Date:   2017-12-12T17:14:43+01:00
+# @Email:  mikolaj.stepniewski1@gmail.com
+# @Filename: neuron.py
+# @Last modified by:   maikelSoFly
+# @Last modified time: 2017-12-16T13:21:08+01:00
+# @Copyright: Copyright © 2017 Mikołaj Stępniewski. All rights reserved.
+
+
+
 import numpy as np
 
 class Neuron:

@@ -1,3 +1,13 @@
+# @Author: Mikołaj Stępniewski <maikelSoFly>
+# @Date:   2017-12-12T17:15:51+01:00
+# @Email:  mikolaj.stepniewski1@gmail.com
+# @Filename: neurons.py
+# @Last modified by:   maikelSoFly
+# @Last modified time: 2017-12-16T13:20:36+01:00
+# @Copyright: Copyright © 2017 Mikołaj Stępniewski. All rights reserved.
+
+
+
 import sys
 # Add the include folder path to the sys.path list
 sys.path.append('../include')
