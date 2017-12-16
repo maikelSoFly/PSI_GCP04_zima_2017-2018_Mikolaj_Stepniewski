@@ -3,7 +3,8 @@
 # @Email:  mikolaj.stepniewski1@gmail.com
 # @Filename: main.py
 # @Last modified by:   maikelSoFly
-# @Last modified time: 2017-12-16T13:57:33+01:00
+# @Last modified time: 2017-12-16T16:17:23+01:00
+# @License: Apache License  Version 2.0, January 2004
 # @Copyright: Copyright © 2017 Mikołaj Stępniewski. All rights reserved.
 
 
@@ -13,6 +14,7 @@ from math import floor
 from neurons import *
 from data import *
 from progressBar import *
+import fileinput
 
 
 dataUrl = 'http://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data'
@@ -134,3 +136,10 @@ for i, neuron in enumerate(mostActiveNeurons):
 
 print('\n•Total active neurons in group: {:d}'.format(numOfActiveNeurons))
 print('\nlRate{:d}: {:.5f}'.format(epochs, kohonenGroup._currentLRate))
+
+answ = input('Print error history?\ty/n: ')
+if answ == 'y':
+    for neuron in mostActiveNeurons:
+        print('\n\n•••••••••••\t{:d}\n\n'.format(neuron._iid))
+        for row in neuron._distHistory:
+            print(row)

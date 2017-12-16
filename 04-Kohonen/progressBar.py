@@ -3,7 +3,8 @@
 # @Email:  mikolaj.stepniewski1@gmail.com
 # @Filename: progressBar.py
 # @Last modified by:   maikelSoFly
-# @Last modified time: 2017-12-16T13:46:52+01:00
+# @Last modified time: 2017-12-16T14:12:14+01:00
+# @License: Apache License  Version 2.0, January 2004
 # @Copyright: Copyright © 2017 Mikołaj Stępniewski. All rights reserved.
 
 

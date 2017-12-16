@@ -3,7 +3,8 @@
 # @Email:  mikolaj.stepniewski1@gmail.com
 # @Filename: neuron.py
 # @Last modified by:   maikelSoFly
-# @Last modified time: 2017-12-16T13:21:08+01:00
+# @Last modified time: 2017-12-16T14:12:39+01:00
+# @License: Apache License  Version 2.0, January 2004
 # @Copyright: Copyright © 2017 Mikołaj Stępniewski. All rights reserved.
 
 

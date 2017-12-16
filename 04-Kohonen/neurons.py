@@ -3,7 +3,8 @@
 # @Email:  mikolaj.stepniewski1@gmail.com
 # @Filename: neurons.py
 # @Last modified by:   maikelSoFly
-# @Last modified time: 2017-12-16T13:53:17+01:00
+# @Last modified time: 2017-12-16T16:09:34+01:00
+# @License: Apache License  Version 2.0, January 2004
 # @Copyright: Copyright © 2017 Mikołaj Stępniewski. All rights reserved.
 
 
@@ -24,9 +25,11 @@ class KohonenNeuron(Neuron):
         self.__dict__['_processFunc'] = processFunc
         self.__dict__['_startWeights'] = self._weights[:]
         self.__dict__['_dist'] = None
+        self.__dict__['_distHistory'] = []
 
     def process(self, vector):
         self._dist = self._processFunc(vector, self._weights)
+        self._distHistory.append(self._dist)
         return self._dist
 
     def train(self, vector):
