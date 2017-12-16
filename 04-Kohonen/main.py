@@ -35,7 +35,7 @@ def trainSeparately(kohonenGroup, speciesArr):
     start = time.time()
     for j, species in enumerate(speciesArr):
         print('\n', speciesNames[j])
-        print('....................')
+        print('▁ ▁ ▁ ▁ ▁ ▁ ▁ ▁ ▁ ▁')
         for i in range(epochs):
             if i != 0 and i % (round(epochs/10)) == 0:
                 print('▇', end=' ', flush=True)
@@ -51,15 +51,15 @@ def trainSeparately(kohonenGroup, speciesArr):
 
 def trainSimultaneously(kohonenGroup, trainingData):
     print('\n {} + {} + {}'.format(speciesNames[0], speciesNames[1], speciesNames[2]))
-    print('....................')
+    print('▁ ▁ ▁ ▁ ▁ ▁ ▁ ▁ ▁ ▁ ▁ ▁ ▁ ▁ ▁ ▁ ▁ ▁ ▁ ▁')
     start = time.time()
     for i in range(epochs):
-        if i != 0 and i % (round(epochs/10)) == 0:
+        if i != 0 and i % (round(epochs/20)) == 0:
             print('▇', end=' ', flush=True)
         """ Train with one species at a time """
         winners = kohonenGroup.train(trainingData)
     end = time.time()
-    print('▇\tdone\tin: {:.3f} sec'.format(end-start))
+    print('▇ \tdone\tin: {:.3f} sec'.format(end-start))
     return winners
 
 
