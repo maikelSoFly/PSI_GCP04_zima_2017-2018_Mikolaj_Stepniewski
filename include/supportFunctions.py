@@ -1,3 +1,13 @@
+# @Author: Mikołaj Stępniewski <maikelSoFly>
+# @Date:   2017-12-12T18:35:40+01:00
+# @Email:  mikolaj.stepniewski1@gmail.com
+# @Filename: supportFunctions.py
+# @Last modified by:   maikelSoFly
+# @Last modified time: 2017-12-16T13:56:36+01:00
+# @Copyright: Copyright © 2017 Mikołaj Stępniewski. All rights reserved.
+
+
+
 import numpy as np
 from math import sqrt
 
@@ -98,10 +108,10 @@ def euklidesDistance(v1, v2):
 
 def simpleLRateCorrection(lambd):
     t=-1
-    def f():
+    def f(x):
         nonlocal t
         t+=1
-        return np.exp(-t/lambd)
+        return x * np.exp(-t/lambd)
     return f
 
 def normalizeInputs(arr):

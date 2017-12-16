@@ -3,7 +3,7 @@
 # @Email:  mikolaj.stepniewski1@gmail.com
 # @Filename: neurons.py
 # @Last modified by:   maikelSoFly
-# @Last modified time: 2017-12-16T13:20:36+01:00
+# @Last modified time: 2017-12-16T13:53:17+01:00
 # @Copyright: Copyright © 2017 Mikołaj Stępniewski. All rights reserved.
 
 
@@ -93,7 +93,7 @@ class KohonenNeuronGroup:
             winner.train(vector)
             winners.append(winner)
 
-        self.setLRate(self._lRate * self._lRateFunc())
+        self.setLRate(self._lRateFunc(self._lRate))
 
         if retMostCommon:
             return Counter(winners).most_common(1)[0][0]
