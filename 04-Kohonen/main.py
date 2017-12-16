@@ -2,13 +2,14 @@ from math import ceil
 from math import floor
 from neurons import *
 from data import *
+from progressBar import *
 import time
 
 dataUrl = 'http://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data'
 speciesNames = ['Iris-setosa', 'Iris-versicolor', 'Iris-virginica']
 
 """ Training parameters """
-epochs = 20
+epochs = 4
 decay = (epochs/10)*150
 neuronGrid = [16, 16]
 lRate = 0.1
@@ -31,35 +32,37 @@ def averageParameters(species, n=50):
 
 
 def trainSeparately(kohonenGroup, speciesArr):
+
+    lBar = ProgressBar(length=10)
     winners = []
     start = time.time()
     for j, species in enumerate(speciesArr):
         print('\n', speciesNames[j])
-        print('▁ ▁ ▁ ▁ ▁ ▁ ▁ ▁ ▁ ▁')
+        lBar.start(maxVal=epochs)
         for i in range(epochs):
-            if i != 0 and i % (round(epochs/10)) == 0:
-                print('▇', end=' ', flush=True)
+            lBar.update()
             """ Train with one species at a time """
             winner = kohonenGroup.train(species, retMostCommon=True)
         winners.append(winner)  # winner for each species
         kohonenGroup.resetWeights()
         """ ^ reset weights between species """
         end = time.time()
-        print('▇\tdone\tin: {:.3f} sec'.format(end-start))
+        print('\tdone\tin: {:.3f} sec'.format(end-start))
 
     return winners
 
 def trainSimultaneously(kohonenGroup, trainingData):
+    lBar = ProgressBar(length=20)
     print('\n {} + {} + {}'.format(speciesNames[0], speciesNames[1], speciesNames[2]))
-    print('▁ ▁ ▁ ▁ ▁ ▁ ▁ ▁ ▁ ▁ ▁ ▁ ▁ ▁ ▁ ▁ ▁ ▁ ▁ ▁')
+    lBar.start(maxVal=epochs)
     start = time.time()
     for i in range(epochs):
-        if i != 0 and i % (round(epochs/20)) == 0:
-            print('▇', end=' ', flush=True)
+        lBar.update()
         """ Train with one species at a time """
         winners = kohonenGroup.train(trainingData)
     end = time.time()
-    print('▇ \tdone\tin: {:.3f} sec'.format(end-start))
+    print('\tdone\tin: {:.3f} sec'.format(end-start))
+
     return winners
 
 
