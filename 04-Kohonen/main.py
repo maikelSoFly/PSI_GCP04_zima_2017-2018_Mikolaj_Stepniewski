@@ -3,7 +3,7 @@
 # @Email:  mikolaj.stepniewski1@gmail.com
 # @Filename: main.py
 # @Last modified by:   maikelSoFly
-# @Last modified time: 2017-12-16T13:20:42+01:00
+# @Last modified time: 2017-12-16T13:32:40+01:00
 # @Copyright: Copyright © 2017 Mikołaj Stępniewski. All rights reserved.
 
 
@@ -32,17 +32,17 @@ def getMostCommonItem(arr):
     return Counter(arr).most_common(1)[0][0]
 
 def averageParameters(species, n=50):
-    sum = [0.0, 0.0, 0.0, 0.0]
+    sum = [0.0 for _ in range(4)]
     for row in species:
         sum[0] += row[0]
         sum[1] += row[1]
         sum[2] += row[2]
         sum[3] += row[3]
-    return [ceil((sum[0]/n)*100)/100, ceil((sum[1]/n)*100)/100, ceil((sum[2]/n)*100)/100, ceil((sum[3]/n)*100)/100]
+    return [ceil((sum[i]/n)*100)/100 for i in range(4)]
 
 
 def trainSeparately(kohonenGroup, speciesArr):
-    pBar = ProgressBar(length=50)
+    pBar = ProgressBar()
     winners = []
     for j, species in enumerate(speciesArr):
         print('\n', speciesNames[j])
@@ -59,13 +59,13 @@ def trainSeparately(kohonenGroup, speciesArr):
 
 """ Main training function !!! """
 def trainSimultaneously(kohonenGroup, trainingData):
-    pBar = ProgressBar(length=50)
+    pBar = ProgressBar()
     print('\n {} + {} + {}'.format(speciesNames[0], speciesNames[1], speciesNames[2]))
     pBar.start(maxVal=epochs)
 
     for i in range(epochs):
-        pBar.update()
         winners = kohonenGroup.train(trainingData)
+        pBar.update()
 
     return winners
 

@@ -3,7 +3,7 @@
 # @Email:  mikolaj.stepniewski1@gmail.com
 # @Filename: progressBar.py
 # @Last modified by:   maikelSoFly
-# @Last modified time: 2017-12-16T13:20:50+01:00
+# @Last modified time: 2017-12-16T13:24:59+01:00
 # @Copyright: Copyright © 2017 Mikołaj Stępniewski. All rights reserved.
 
 
@@ -13,7 +13,7 @@ from math import floor
 import time
 
 class ProgressBar:
-    def __init__(self, length):
+    def __init__(self, length=50):
         self.__dict__['_l'] = length
         self.__dict__['_x'] = None
         self.__dict__['_t'] = None
