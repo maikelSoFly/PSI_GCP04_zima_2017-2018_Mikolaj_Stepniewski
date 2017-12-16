@@ -55,7 +55,6 @@ def trainSimultaneously(kohonenGroup, trainingData):
 
     for i in range(epochs):
         pBar.update()
-        """ Train with one species at a time """
         winners = kohonenGroup.train(trainingData)
 
     return winners
