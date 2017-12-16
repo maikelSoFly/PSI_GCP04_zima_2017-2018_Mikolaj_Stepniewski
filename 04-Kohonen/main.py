@@ -3,7 +3,7 @@
 # @Email:  mikolaj.stepniewski1@gmail.com
 # @Filename: main.py
 # @Last modified by:   maikelSoFly
-# @Last modified time: 2017-12-16T13:32:40+01:00
+# @Last modified time: 2017-12-16T13:41:00+01:00
 # @Copyright: Copyright © 2017 Mikołaj Stępniewski. All rights reserved.
 
 
@@ -58,7 +58,7 @@ def trainSeparately(kohonenGroup, speciesArr):
     return winners
 
 """ Main training function !!! """
-def trainSimultaneously(kohonenGroup, trainingData):
+def train(kohonenGroup, trainingData):
     pBar = ProgressBar()
     print('\n {} + {} + {}'.format(speciesNames[0], speciesNames[1], speciesNames[2]))
     pBar.start(maxVal=epochs)
@@ -104,7 +104,7 @@ print()
 
 
 
-""" Training """
+""" Training & results """
 
 # winners = trainSeparately(kohonenGroup, speciesArr)
 # print('\n\n•Results:\t(Most common winner-neurons)')
@@ -113,7 +113,7 @@ print()
 #
 # print('\n')
 
-winners = trainSimultaneously(kohonenGroup, trainingData)
+winners = train(kohonenGroup, trainingData)
 numOfActiveNeurons = countUniqueItems(winners)
 winners = np.split(np.array(winners), 3)
 
