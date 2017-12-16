@@ -3,7 +3,7 @@
 # @Email:  mikolaj.stepniewski1@gmail.com
 # @Filename: progressBar.py
 # @Last modified by:   maikelSoFly
-# @Last modified time: 2017-12-16T13:24:59+01:00
+# @Last modified time: 2017-12-16T13:46:52+01:00
 # @Copyright: Copyright © 2017 Mikołaj Stępniewski. All rights reserved.
 
 
@@ -31,7 +31,7 @@ class ProgressBar:
 
         self._mod = ceil(self._x/self._l) if self._x > self._l else ceil(self._x/self._l)
         self._times = 1 if self._x > self._l else floor(self._l/self._x)
-        self._restTimes = self._l-floor((self._x-1)/self._mod) if self._x > self._l else self._l-(self._x-1)*floor(self._l/self._x)
+        self._restTimes = self._l-floor((self._x-1)/self._mod) if self._x > self._l else self._l-(self._x-1)*self._times
 
         print(self._lineChar * self._l, end = '', flush=True)
         print()
