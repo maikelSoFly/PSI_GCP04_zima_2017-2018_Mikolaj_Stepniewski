@@ -2,16 +2,13 @@ from neurons import *
 import numpy as np
 from emojis import *
 from random import randint
-import random
 import copy
 
 #np.random.seed(5)
 neuronGrid = [15, 15]
-lRate=0.007
-fRate=0.4
+lRate=0.1
+fRate=0.28
 
-
-emoji = Emoji()
 
 def countUniqueItems(arr):
     return len(Counter(arr).keys())
@@ -19,7 +16,7 @@ def countUniqueItems(arr):
 def noiseEmojis(arr, numOfPixels):
     noisedArr = copy.deepcopy(arr)
     for emoji in noisedArr:
-        pixels = random.sample(range(1, 63), numOfPixels)
+        pixels = np.random.choice(64, numOfPixels, replace=False)
         for pixel in pixels:
             emoji[pixel] *= -1
 
@@ -27,6 +24,7 @@ def noiseEmojis(arr, numOfPixels):
 
 
 
+emoji = Emoji()
 trainingSet = [
     emoji.getEmoji('sad'),
     emoji.getEmoji('smile'),
@@ -35,37 +33,27 @@ trainingSet = [
     emoji.getEmoji('confused'),
     emoji.getEmoji('test')
 ]
-
-noisedSet = noiseEmojis(trainingSet, 2)
-# for emoji in trainingSet+noisedSet:
-#     for i in range(64):
-#         if i != 0 and i % 8 == 0:
-#             print()
-#         print(emoji[i], end=' ', flush=True)
-#     print('\n')
-
-trainingSet += noisedSet
+noisedSet = noiseEmojis(trainingSet, 4)
 
 
 hebbGroup = HebbNeuronGroup(
     numOfInputs=64,
     numOfNeurons=neuronGrid,
-    processFunc=SignSigm()(0.5),
+    activFunc=SignSigm()(0.5),
     lRateFunc=Linear()(),
     lRate=lRate,
     fRate=fRate
 )
 
-# for neuron in hebbNrs:
-#     neuron.setTrainingData(trainingSet)
 
-winners = []
-for i in range(20):
-    winners = hebbGroup.train(trainingSet)
+for i in range(50):
+    """ Will get winners from the last epoch """
+    winners = hebbGroup.train(trainingSet+noisedSet)
 
+numOfActiveNeurons = countUniqueItems(winners)
 winners = np.split(np.array(winners), 2)
 
 for i in range(len(winners[0])):
     print(winners[0][i]._iid, winners[1][i]._iid)
 
-print('Active neurons: {:d}'.format(countUniqueItems(np.concatenate((winners[0],winners[1]), axis=0))))
+print('Active neurons: {:d}'.format(numOfActiveNeurons))
