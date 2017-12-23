@@ -3,7 +3,7 @@
 # @Email:  mikolaj.stepniewski1@gmail.com
 # @Filename: main.py
 # @Last modified by:   maikelSoFly
-# @Last modified time: 2017-12-16T16:17:23+01:00
+# @Last modified time: 2017-12-17T15:20:01+01:00
 # @License: Apache License  Version 2.0, January 2004
 # @Copyright: Copyright © 2017 Mikołaj Stępniewski. All rights reserved.
 
@@ -14,7 +14,7 @@ from math import floor
 from neurons import *
 from data import *
 from progressBar import *
-import fileinput
+import random
 
 
 dataUrl = 'http://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data'
@@ -22,9 +22,9 @@ speciesNames = ['Iris-setosa', 'Iris-versicolor', 'Iris-virginica']
 
 """ Training parameters """
 epochs = 10
-decay = (epochs/10)*150
+decay = (epochs)*150
 neuronGrid = [17, 17]
-lRate = 0.1
+lRate = 0.09    # 0.07 one of the best
 
 
 def countUniqueItems(arr):
@@ -66,7 +66,7 @@ def train(kohonenGroup, trainingData):
     pBar.start(maxVal=epochs)
 
     for i in range(epochs):
-        winners = kohonenGroup.train(trainingData)
+        winners = kohonenGroup.train(trainingData, histFreq=20)
         pBar.update()
 
     return winners
@@ -94,7 +94,7 @@ kohonenGroup = KohonenNeuronGroup(
 )
 
 
-print('lRate0: {:.2f}\tlr decay: {}\tneurons in group: {:d}\tepochs: {:d}'.format(
+print('lRate0: {:.2f}\tdecay: {}\tneurons in group: {:d}\tepochs: {:d}'.format(
     kohonenGroup._lRate, decay, kohonenGroup['totalNumOfNeurons'], epochs
 ))
 
@@ -114,6 +114,8 @@ print()
 #     print('idd: {} \t{}\t{}'.format(winner._iid, winner._weights, speciesNames[i]))
 #
 # print('\n')
+
+#random.shuffle(trainingData)
 
 winners = train(kohonenGroup, trainingData)
 numOfActiveNeurons = countUniqueItems(winners)
@@ -140,6 +142,7 @@ print('\nlRate{:d}: {:.5f}'.format(epochs, kohonenGroup._currentLRate))
 answ = input('Print error history?\ty/n: ')
 if answ == 'y':
     for neuron in mostActiveNeurons:
-        print('\n\n•••••••••••\t{:d}\n\n'.format(neuron._iid))
-        for row in neuron._distHistory:
+        print('\n')
+        print('▄' * 25, '   [neuron: {:d}]\n\n'.format(neuron._iid))
+        for row in neuron._errorHist:
             print(row)

@@ -2,12 +2,19 @@ from neurons import *
 import numpy as np
 from emojis import *
 
-np.random.seed(5)
+#np.random.seed(5)
+neuronGrid = [15, 15]
+lRate=0.007
+fRate=0.4
 
 emoji = Emoji()
 
+def countUniqueItems(arr):
+    return len(Counter(arr).keys())
+
 trainingSet = [
     emoji.getEmoji('sad'),
+    emoji.getEmoji('sad_noised'),
     emoji.getEmoji('smile'),
     emoji.getEmoji('angry'),
     emoji.getEmoji('xD'),
@@ -16,18 +23,23 @@ trainingSet = [
 ]
 
 
-hebbNr = HebbNeuron(
+hebbGroup = HebbNeuronGroup(
     numOfInputs=64,
-    iid=0,
-    activFunc=SignSigm()(1.0),
-    lRate=0.007,
-    fRate=0.1
+    numOfNeurons=neuronGrid,
+    processFunc=SignSigm()(0.5),
+    lRateFunc=Linear()(),
+    lRate=lRate,
+    fRate=fRate
 )
 
-hebbNr.setTrainingData(trainingSet)
+# for neuron in hebbNrs:
+#     neuron.setTrainingData(trainingSet)
 
-for i in range(10000):
-    hebbNr.train()
+winners = []
+for i in range(100):
+    winners = hebbGroup.train(trainingSet)
 
-for emoji in trainingSet:
-    print(hebbNr.process(emoji))
+for winner in winners:
+    print(winner._iid)
+
+print('Active neurons: {:d}'.format(countUniqueItems(winners)))

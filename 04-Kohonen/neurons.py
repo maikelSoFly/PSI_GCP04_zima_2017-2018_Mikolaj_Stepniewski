@@ -3,7 +3,7 @@
 # @Email:  mikolaj.stepniewski1@gmail.com
 # @Filename: neurons.py
 # @Last modified by:   maikelSoFly
-# @Last modified time: 2017-12-16T16:09:34+01:00
+# @Last modified time: 2017-12-16T23:31:39+01:00
 # @License: Apache License  Version 2.0, January 2004
 # @Copyright: Copyright © 2017 Mikołaj Stępniewski. All rights reserved.
 
@@ -21,16 +21,14 @@ class KohonenNeuron(Neuron):
     def __init__(self, numOfInputs, processFunc, iid, lRate=0.1):
         Neuron.__init__(self, numOfInputs, iid, activFunc=None, lRate=lRate, bias=0)
         self.__dict__['_winnerCounter'] = 0
-        self.__dict__['_pausedCounter'] = 0
         self.__dict__['_processFunc'] = processFunc
         self.__dict__['_startWeights'] = self._weights[:]
-        self.__dict__['_dist'] = None
-        self.__dict__['_distHistory'] = []
+        self.__dict__['_errorHist'] = []
 
     def process(self, vector):
-        self._dist = self._processFunc(vector, self._weights)
-        self._distHistory.append(self._dist)
-        return self._dist
+        self._error = self._processFunc(vector, self._weights)
+        #self._errorHist.append(self._error)
+        return self._error
 
     def train(self, vector):
         for i in range(len(self._weights)):
@@ -78,7 +76,7 @@ class KohonenNeuronGroup:
                 neuron._lRate = lRate
 
 
-    def train(self, vectors, retMostCommon=False):
+    def train(self, vectors, histFreq=1, retMostCommon=False):
         winners = []
         for i, vector in enumerate(vectors):
             winner = None
@@ -88,11 +86,13 @@ class KohonenNeuronGroup:
                     if winner == None:
                         winner = neuron
                     elif winner != None:
-                        if neuron._dist < winner._dist:
+                        if neuron._error < winner._error:
                             winner = neuron
 
-            winner._winnerCounter += 1
             """ Winner Takes All """
+            if winner._winnerCounter % histFreq == 0:
+                winner._errorHist.append(winner._error)
+            winner._winnerCounter += 1
             winner.train(vector)
             winners.append(winner)
 
