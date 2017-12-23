@@ -6,8 +6,8 @@ import copy
 
 #np.random.seed(5)
 neuronGrid = [15, 15]
-lRate=0.1
-fRate=0.28
+lRate=0.007
+fRate=0.35
 
 
 def countUniqueItems(arr):
@@ -33,13 +33,12 @@ trainingSet = [
     emoji.getEmoji('confused'),
     emoji.getEmoji('test')
 ]
-noisedSet = noiseEmojis(trainingSet, 4)
+noisedSet = noiseEmojis(trainingSet, 6)
 
 
 hebbGroup = HebbNeuronGroup(
     numOfInputs=64,
     numOfNeurons=neuronGrid,
-    activFunc=SignSigm()(0.5),
     lRateFunc=Linear()(),
     lRate=lRate,
     fRate=fRate
