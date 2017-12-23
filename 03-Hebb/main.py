@@ -1,7 +1,5 @@
 from neurons import *
-import numpy as np
 from emojis import *
-from random import randint
 import copy
 
 #np.random.seed(5)
@@ -33,6 +31,7 @@ trainingSet = [
     emoji.getEmoji('confused'),
     emoji.getEmoji('test')
 ]
+""" Working well up to 6 noise pixels """
 noisedSet = noiseEmojis(trainingSet, 6)
 
 
