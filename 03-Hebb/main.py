@@ -3,10 +3,15 @@ from emojis import *
 import copy
 
 #np.random.seed(5)
-neuronGrid = [15, 15]
+neuronGrid = [10, 10]
 lRate=0.007
-fRate=0.35
+fRate=0.36
 
+def bipolarEmoji(emoji):
+    for i in range(len(emoji)):
+        if emoji[i] == 0:
+            emoji[i] = -1
+    return emoji
 
 def countUniqueItems(arr):
     return len(Counter(arr).keys())
@@ -23,16 +28,11 @@ def noiseEmojis(arr, numOfPixels):
 
 
 emoji = Emoji()
-trainingSet = [
-    emoji.getEmoji('sad'),
-    emoji.getEmoji('smile'),
-    emoji.getEmoji('angry'),
-    emoji.getEmoji('xD'),
-    emoji.getEmoji('confused'),
-    emoji.getEmoji('test')
-]
+emojisToGet = [ 'sad', 'smile', 'angry', 'laugh', 'surprised', 'confused' ]
+trainingSet = [ bipolarEmoji(emoji.getEmoji(name)) for name in emojisToGet ]
+
 """ Working well up to 6 noise pixels """
-noisedSet = noiseEmojis(trainingSet, 6)
+noisedSet = noiseEmojis(trainingSet, 5)
 
 
 hebbGroup = HebbNeuronGroup(
