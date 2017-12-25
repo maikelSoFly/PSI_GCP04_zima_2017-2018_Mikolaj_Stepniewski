@@ -7,8 +7,9 @@ neuronGrid = [10, 10]
 lRate=0.007
 fRate=0.36
 numOfNoisePixels=5
+epochs=30
 
-def bipolarEmoji(emoji):
+def bipolar(emoji):
     for i in range(len(emoji)):
         if emoji[i] == 0:
             emoji[i] = -1
@@ -26,26 +27,44 @@ def noiseEmojis(arr, numOfNoisePixels):
 
     return noisedArr
 
+def drawEmojis(emojis):
+    i = 0
+    emojis = np.split(np.array(emojis), 2)
+    for j in range(len(emojis)):
+        for row in range(8):
+            for emoji in emojis[j]:
+                for i in range(8):
+                    print('◼️' if emoji[row*8+i] == -1 or emoji[row*8+i] == 0 else '◻️', end=' ', flush=True)
+                    if (i+1) % 8 == 0:
+                        print('    ', end='', flush=False)
+                        pass
+            print()
+        print('\n')
+
 
 
 emoji = Emoji()
 emojisToGet = [ 'sad', 'smile', 'angry', 'laugh', 'surprised', 'confused' ]
-trainingSet = [ bipolarEmoji(emoji.getEmoji(name)) for name in emojisToGet ]
+trainingSet = [ bipolar(emoji.getEmoji(name)) for name in emojisToGet ]
 
-""" Working well up to 6 noise pixels """
+""" Working well up to 5 noise pixels """
 noisedSet = noiseEmojis(trainingSet, numOfNoisePixels)
 
+drawEmojis(trainingSet)
+print('NOISED:\n')
+drawEmojis(noisedSet)
 
 hebbGroup = HebbNeuronGroup(
     numOfInputs=64,
     numOfNeurons=neuronGrid,
+    activFunc=Linear()(),
     lRateFunc=Linear()(),
     lRate=lRate,
     fRate=fRate
 )
 
 
-for i in range(50):
+for i in range(epochs):
     """ Will get winners from the last epoch """
     winners = hebbGroup.train(trainingSet+noisedSet)
 

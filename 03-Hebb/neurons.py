@@ -6,9 +6,10 @@ from collections import Counter
 
 
 class HebbNeuron:
-    def __init__(self, numOfInputs, iid, lRate=0.1, fRate=0.28, bias=-0.5):
+    def __init__(self, numOfInputs, iid, activFunc, lRate=0.1, fRate=0.28, bias=-0.5):
         self._weights = np.array([np.random.uniform(-1, 1) for _ in range(numOfInputs)])
         self.__dict__['_bias'] = bias
+        self.__dict__['_activFunc'] = activFunc
         self.__dict__['_lRate'] = lRate
         self.__dict__['_fRate'] = fRate     # forget rate
         self.__dict__['_trainingData'] = None
@@ -20,7 +21,7 @@ class HebbNeuron:
 
     def process(self, inputs):
         self._sum = np.dot(self._weights, inputs) + self._bias
-        return self._sum
+        return self._activFunc(self._sum)
 
 
     def train(self, inputs):
@@ -41,8 +42,9 @@ class HebbNeuron:
     Winner is neuron with least distance
     between weights vector and input vector """
 class HebbNeuronGroup:
-    def __init__(self, numOfInputs, numOfNeurons, lRateFunc, lRate=0.007, fRate=0.1):
+    def __init__(self, numOfInputs, numOfNeurons, activFunc, lRateFunc, lRate=0.007, fRate=0.1):
         self.__dict__['_numOfNeurons'] = numOfNeurons
+        self.__dict__['_activFunc'] = activFunc
         self.__dict__['_lRate'] = lRate
         self.__dict__['_fRate'] = fRate
         self.__dict__['_numOfInputs'] = numOfInputs
@@ -50,7 +52,7 @@ class HebbNeuronGroup:
         self.__dict__['_lRateFunc'] = lRateFunc
         self.__dict__['_currentLRate'] = None
 
-        self._neurons = [[HebbNeuron(numOfInputs, i*numOfNeurons[0]+j, lRate=lRate, fRate=fRate)
+        self._neurons = [[HebbNeuron(numOfInputs, i*numOfNeurons[0]+j, activFunc, lRate=lRate, fRate=fRate)
             for i in range(numOfNeurons[0])]
             for j in range(numOfNeurons[1])
         ]
