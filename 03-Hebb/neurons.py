@@ -21,7 +21,8 @@ class HebbNeuron:
 
     def process(self, inputs):
         self._sum = np.dot(self._weights, inputs) + self._bias
-        return self._activFunc(self._sum)
+        self._val = self._activFunc(self._sum)
+        return self._val
 
 
     def train(self, inputs):
@@ -85,7 +86,7 @@ class HebbNeuronGroup:
                     if winner == None:
                         winner = neuron
                     elif winner != None:
-                        if neuron._sum > winner._sum:
+                        if neuron._val > winner._val:
                             winner = neuron
 
             """ Winner Takes All """

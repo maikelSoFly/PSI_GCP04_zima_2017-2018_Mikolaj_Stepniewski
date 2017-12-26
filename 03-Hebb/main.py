@@ -5,9 +5,10 @@ import copy
 #np.random.seed(5)
 neuronGrid = [10, 10]
 lRate=0.007
-fRate=0.36
+fRate=0.37
 numOfNoisePixels=5
-epochs=30
+epochs=300
+decay=30*12
 
 def bipolar(emoji):
     for i in range(len(emoji)):
@@ -75,4 +76,6 @@ print('NORMAL\tNOISED')
 for i in range(len(winners[0])):
     print(winners[0][i]._iid, '\t', winners[1][i]._iid)
 
+
 print('Active neurons: {:d}'.format(numOfActiveNeurons))
+print('lRate: {:.5f}'.format(hebbGroup._currentLRate))
