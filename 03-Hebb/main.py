@@ -1,14 +1,16 @@
 from neurons import *
 from emojis import *
+from progressBar import *
 import copy
 
 #np.random.seed(5)
-neuronGrid = [10, 10]
+neuronGrid = [11, 11]
 lRate=0.007
-fRate=0.37
-numOfNoisePixels=5
+fRate=0.415
+numOfNoisePixels=9
 epochs=300
 decay=30*12
+pBar = ProgressBar(length=56)
 
 def bipolar(emoji):
     for i in range(len(emoji)):
@@ -52,7 +54,7 @@ trainingSet = [ bipolar(emoji.getEmoji(name)) for name in emojisToGet ]
 noisedSet = noiseEmojis(trainingSet, numOfNoisePixels)
 
 drawEmojis(trainingSet)
-print('NOISED:\n')
+print('NOISED with {:d} pixels:'.format(numOfNoisePixels))
 drawEmojis(noisedSet)
 
 hebbGroup = HebbNeuronGroup(
@@ -64,17 +66,22 @@ hebbGroup = HebbNeuronGroup(
     fRate=fRate
 )
 
-
+print('Running {:d} epochs...'.format(epochs))
+pBar.start(maxVal=epochs)
 for i in range(epochs):
-    """ Will get winners from the last epoch """
-    winners = hebbGroup.train(trainingSet+noisedSet)
+    """ Will get winners from the latest epoch """
+    winners1 = hebbGroup.train(trainingSet)
+    pBar.update()
 
-numOfActiveNeurons = countUniqueItems(winners)
-winners = np.split(np.array(winners), 2)
+""" Try to classify noised emojis """
+winners2 = hebbGroup.classify(noisedSet)
+
+numOfActiveNeurons = countUniqueItems(winners1+winners2)
+
 
 print('NORMAL\tNOISED')
-for i in range(len(winners[0])):
-    print(winners[0][i]._iid, '\t', winners[1][i]._iid)
+for i in range(len(winners1)):
+    print(winners1[i]._iid, '\t', winners2[i]._iid)
 
 
 print('Active neurons: {:d}'.format(numOfActiveNeurons))

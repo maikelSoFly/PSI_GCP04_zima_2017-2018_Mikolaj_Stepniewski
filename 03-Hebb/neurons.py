@@ -33,8 +33,8 @@ class HebbNeuron:
             self._weights[i] *= forget
             self._weights[i] += constant * inputs[i]
 
-        self._bias *= 1.0 - self._fRate
-        self._bias += constant
+        # self._bias *= 1.0 - self._fRate
+        # self._bias += constant
 
 
 
@@ -100,6 +100,23 @@ class HebbNeuronGroup:
 
         if retMostCommon:
             return Counter(winners).most_common(1)[0][0]
+
+        return winners
+
+    def classify(self, vectors):
+        winners = []
+        for i, vector in enumerate(vectors):
+            winner = None
+            for row in self._neurons:
+                for neuron in row:
+                    neuron.process(vector)
+                    if winner == None:
+                        winner = neuron
+                    elif winner != None:
+                        if neuron._val > winner._val:
+                            winner = neuron
+
+            winners.append(winner)
 
         return winners
 
