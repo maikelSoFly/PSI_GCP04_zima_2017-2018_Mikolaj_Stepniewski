@@ -50,7 +50,7 @@ emoji = Emoji()
 emojisToGet = [ 'sad', 'smile', 'angry', 'laugh', 'surprised', 'confused' ]
 trainingSet = [ bipolar(emoji.getEmoji(name)) for name in emojisToGet ]
 
-""" Working well up to 5 noise pixels """
+""" Working well up to 9 noise pixels """
 noisedSet = noiseEmojis(trainingSet, numOfNoisePixels)
 
 drawEmojis(trainingSet)
