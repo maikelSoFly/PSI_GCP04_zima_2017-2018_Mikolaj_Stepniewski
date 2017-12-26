@@ -81,6 +81,9 @@ def hardSign(x):
         return -1.0
     return 1.0
 
+def hardLimit(x):
+    return 1 if x >= 0 else 0
+
 class Linear:
     def __call__(self):
         def linear(x):
@@ -120,3 +123,12 @@ def normalizeInputs(arr):
     for el in arr:
         sum += el**2
     return [i/sqrt(sum) for i in arr]
+
+def normalizeInputs2d(arr2d):
+    newArr = []
+    sum = 0.0
+    for obj in arr2d:
+        for el  in obj:
+            sum += el**2
+        newArr.append([i/sqrt(sum) for i in obj])
+    return newArr

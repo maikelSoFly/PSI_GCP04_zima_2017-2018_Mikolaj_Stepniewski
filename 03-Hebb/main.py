@@ -4,10 +4,10 @@ import copy
 
 #np.random.seed(5)
 neuronGrid = [10, 10]
-lRate=0.007
-fRate=0.36
-numOfNoisePixels=5
-epochs=30
+lRate=0.01
+fRate=0.02
+numOfNoisePixels=3
+epochs=50
 
 def bipolar(emoji):
     for i in range(len(emoji)):
@@ -54,10 +54,17 @@ drawEmojis(trainingSet)
 print('NOISED:\n')
 drawEmojis(noisedSet)
 
+trainingSet = normalizeInputs2d(trainingSet)
+noisedSet = normalizeInputs2d(noisedSet)
+
+
+
+
+
 hebbGroup = HebbNeuronGroup(
     numOfInputs=64,
     numOfNeurons=neuronGrid,
-    activFunc=Linear()(),
+    activFunc=SignSigm()(1.0),
     lRateFunc=Linear()(),
     lRate=lRate,
     fRate=fRate
@@ -65,8 +72,10 @@ hebbGroup = HebbNeuronGroup(
 
 
 for i in range(epochs):
-    """ Will get winners from the last epoch """
-    winners = hebbGroup.train(trainingSet+noisedSet)
+    hebbGroup.train(trainingSet)
+
+
+winners = hebbGroup.classify(trainingSet+noisedSet)
 
 numOfActiveNeurons = countUniqueItems(winners)
 winners = np.split(np.array(winners), 2)

@@ -21,7 +21,8 @@ class HebbNeuron:
 
     def process(self, inputs):
         self._sum = np.dot(self._weights, inputs) + self._bias
-        return self._activFunc(self._sum)
+        self._val = self._activFunc(self._sum)
+        return self._val
 
 
     def train(self, inputs):
@@ -32,8 +33,8 @@ class HebbNeuron:
             self._weights[i] *= forget
             self._weights[i] += constant * inputs[i]
 
-        self._bias *= 1.0 - self._fRate
-        self._bias += constant
+        # self._bias *= 1.0 - self._fRate
+        # self._bias += constant
 
 
 
@@ -75,7 +76,17 @@ class HebbNeuronGroup:
                 neuron._lRate = lRate
 
 
-    def train(self, vectors, histFreq=1, retMostCommon=False):
+    def train(self, vectors):
+        for i, vector in enumerate(vectors):
+            winner = None
+            for row in self._neurons:
+                for neuron in row:
+                    neuron.train(vector)
+
+        self.setLRate(self._lRateFunc(self._lRate))
+
+
+    def classify(self, vectors):
         winners = []
         for i, vector in enumerate(vectors):
             winner = None
@@ -85,20 +96,10 @@ class HebbNeuronGroup:
                     if winner == None:
                         winner = neuron
                     elif winner != None:
-                        if neuron._sum > winner._sum:
+                        if neuron._val > winner._val:
                             winner = neuron
 
-            """ Winner Takes All """
-            if winner._winnerCounter % histFreq == 0:
-                winner._sumHist.append(winner._sum)
-            winner._winnerCounter += 1
-            winner.train(vector)
             winners.append(winner)
-
-        self.setLRate(self._lRateFunc(self._lRate))
-
-        if retMostCommon:
-            return Counter(winners).most_common(1)[0][0]
 
         return winners
 
