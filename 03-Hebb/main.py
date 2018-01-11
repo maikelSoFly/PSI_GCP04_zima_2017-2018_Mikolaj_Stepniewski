@@ -44,8 +44,8 @@ if __name__ == '__main__':
     #np.random.seed(5)
     neuronGrid = [11, 11]
     lRate=0.007
-    fRate=0.418
-    numOfNoisePixels=5
+    fRate=0.3
+    numOfNoisePixels=0
     epochs=300
     decay=30*12
     pBar = ProgressBar(length=56)
@@ -58,7 +58,7 @@ if __name__ == '__main__':
     noisedSet = noiseEmojis(trainingSet, numOfNoisePixels)
 
     drawEmojis(trainingSet)
-    print('NOISED with {:d} pixels:'.format(numOfNoisePixels))
+    print('NOISED with {:d} pixels:\n'.format(numOfNoisePixels))
     drawEmojis(noisedSet)
 
     hebbGroup = HebbNeuronGroup(
