@@ -27,7 +27,6 @@ class KohonenNeuron(Neuron):
 
     def process(self, vector):
         self._error = self._processFunc(vector, self._weights)
-        #self._errorHist.append(self._error)
         return self._error
 
     def train(self, vector):
@@ -43,12 +42,11 @@ class KohonenNeuron(Neuron):
     Winner is neuron with least distance
     between weights vector and input vector """
 class KohonenNeuronGroup:
-    def __init__(self, numOfInputs, numOfNeurons, processFunc, trainingData, lRateFunc, lRate=0.1):
+    def __init__(self, numOfInputs, numOfNeurons, processFunc, lRateFunc, lRate=0.1):
         self.__dict__['_numOfNeurons'] = numOfNeurons
         self.__dict__['_lRate'] = lRate
         self.__dict__['_numOfInputs'] = numOfInputs
         self.__dict__['_neurons'] = None
-        self.__dict__['_trainingData'] = trainingData
         self.__dict__['_processFunc'] = processFunc
         self.__dict__['_lRateFunc'] = lRateFunc
         self.__dict__['_currentLRate'] = None
@@ -100,6 +98,25 @@ class KohonenNeuronGroup:
 
         if retMostCommon:
             return Counter(winners).most_common(1)[0][0]
+
+        return winners
+
+
+    """ Basicaly the same as above, but without updating weights """
+    def classify(self, vectors):
+        winners = []
+        for i, vector in enumerate(vectors):
+            winner = None
+            for row in self._neurons:
+                for neuron in row:
+                    neuron.process(vector)
+                    if winner == None:
+                        winner = neuron
+                    elif winner != None:
+                        if neuron._error < winner._error:
+                            winner = neuron
+
+            winners.append(winner)
 
         return winners
 

@@ -15,16 +15,8 @@ from neurons import *
 from data import *
 from progressBar import *
 import random
-
-
-dataUrl = 'http://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data'
-speciesNames = ['Iris-setosa', 'Iris-versicolor', 'Iris-virginica']
-
-""" Training parameters """
-epochs = 10
-decay = (epochs)*150
-neuronGrid = [17, 17]
-lRate = 0.09    # 0.07 one of the best
+import copy
+from prettytable import PrettyTable
 
 
 def countUniqueItems(arr):
@@ -43,22 +35,6 @@ def averageParameters(species, n=50):
     return [ceil((sum[i]/n)*100)/100 for i in range(4)]
 
 
-def trainSeparately(kohonenGroup, speciesArr):
-    pBar = ProgressBar()
-    winners = []
-    for j, species in enumerate(speciesArr):
-        print('\n', speciesNames[j])
-        pBar.start(maxVal=epochs)
-        for i in range(epochs):
-            pBar.update()
-            """ Train with one species at a time """
-            winner = kohonenGroup.train(species, retMostCommon=True)
-        winners.append(winner)  # winner for each species
-        kohonenGroup.resetWeights()
-        """ ^ reset weights between species """
-
-    return winners
-
 """ Main training function !!! """
 def train(kohonenGroup, trainingData):
     pBar = ProgressBar()
@@ -66,83 +42,114 @@ def train(kohonenGroup, trainingData):
     pBar.start(maxVal=epochs)
 
     for i in range(epochs):
-        winners = kohonenGroup.train(trainingData, histFreq=20)
+        testWinners = kohonenGroup.train(trainingData, histFreq=20)
         pBar.update()
 
-    return winners
+    return testWinners
 
 
 
 
-trainingData = DataReader(url=dataUrl, delimiter=',').parse()
 
-for j in range(len(trainingData)):
-        trainingData[j].pop()                                   # remove species name
-        trainingData[j] = [float(i) for i in trainingData[j]]   # cast str elements to float
-        trainingData[j] = normalizeInputs(trainingData[j])      # normalize elements to 0...1 values
+if __name__ == '__main__':
 
-speciesArr = np.split(np.array(trainingData), 3)                # split in 3 different species arrays
+    """ Training parameters """
+    epochs = 30
+    decay = (epochs)*13000
+    neuronGrid = [20, 20]
+    lRate = 0.07    # 0.07 one of the best
 
+    """ Exclude number of irises from total data set
+    and add to test data """
+    noExcludedIrises = 5
 
-kohonenGroup = KohonenNeuronGroup(
-    numOfInputs=4,
-    numOfNeurons=neuronGrid,
-    processFunc=euklidesDistance,
-    trainingData=trainingData,
-    lRateFunc=simpleLRateCorrection(decay),
-    lRate=lRate
-)
+    dataUrl = 'http://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data'
+    speciesNames = ['Iris-setosa', 'Iris-versicolor', 'Iris-virginica']
+    data = DataReader(url=dataUrl, delimiter=',').parse()
+    testData = []
 
+    for j in range(len(data)):
+            data[j].pop()                           # remove species name
+            data[j] = [float(i) for i in data[j]]   # cast str elements to float
+            data[j] = normalizeInputs(data[j])      # normalize elements to 0...1 values
 
-print('lRate0: {:.2f}\tdecay: {}\tneurons in group: {:d}\tepochs: {:d}'.format(
-    kohonenGroup._lRate, decay, kohonenGroup['totalNumOfNeurons'], epochs
-))
-
-print('\n•Averages:')
-for i, species in enumerate(speciesArr):
-    print('{} \t{}'.format(averageParameters(species), speciesNames[i]))
-print()
+    irisDict = {'setosa': data[:50], 'versicolor': data[50:100], 'virginica': data[100:]}
+    speciesArr = np.split(np.array(data), 3)
 
 
+    """ Pop random irises from dict to testData """
+    for i in range(noExcludedIrises):
+        index = np.random.randint(50-i)
+        testData.append(irisDict['setosa'].pop(index))
+        testData.append(irisDict['versicolor'].pop(index))
+        testData.append(irisDict['virginica'].pop(index))
 
 
-""" Training & results """
+    kohonenGroup = KohonenNeuronGroup(
+        numOfInputs=4,
+        numOfNeurons=neuronGrid,
+        processFunc=euklidesDistance,
+        lRateFunc=simpleLRateCorrection(decay),
+        lRate=lRate
+    )
 
-# winners = trainSeparately(kohonenGroup, speciesArr)
-# print('\n\n•Results:\t(Most common winner-neurons)')
-# for i, winner in enumerate(winners):
-#     print('idd: {} \t{}\t{}'.format(winner._iid, winner._weights, speciesNames[i]))
-#
-# print('\n')
 
-#random.shuffle(trainingData)
+    print('lRate0: {:.2f}\tdecay: {}\tneurons in group: {:d}\tepochs: {:d}'.format(
+        kohonenGroup._lRate, decay, kohonenGroup['totalNumOfNeurons'], epochs
+    ))
 
-winners = train(kohonenGroup, trainingData)
-numOfActiveNeurons = countUniqueItems(winners)
-winners = np.split(np.array(winners), 3)
+    print('\n•Averages:')
+    for i, species in enumerate(speciesArr):
+        print('{} \t{}'.format(averageParameters(species), speciesNames[i]))
+    print()
 
-print('\n\n•Results:')
-for i, row in enumerate(winners):
-    print(' {}:\n   active neurons: {:d}\n   most common neuron: {:d}\n'.format(speciesNames[i], countUniqueItems(row), getMostCommonItem(row)._iid))
-    for j, n in enumerate(row):
-        if j != 0 and j % 10 == 0:
-            print()
-        print(n._iid, end=' ', flush=False)
-    print('\n')
 
-mostActiveNeurons = [getMostCommonItem(row) for row in winners]
 
-print('\n•Most common active neurons for species:')
-for i, neuron in enumerate(mostActiveNeurons):
-    print('idd: {}  \t{}\t{}'.format(neuron._iid, neuron._weights, speciesNames[i]))
 
-print('\n•Total active neurons in group: {:d}'.format(numOfActiveNeurons))
-print('\nlRate{:d}: {:.5f}'.format(epochs, kohonenGroup._currentLRate))
+    """ Training & testing """
 
-answ = input('Print error history?\ty/n: ')
-if answ == 'y':
-    for neuron in mostActiveNeurons:
+    trainingData = []
+    trainingData.extend(irisDict['setosa'])
+    trainingData.extend(irisDict['versicolor'])
+    trainingData.extend(irisDict['virginica'])
+
+    trainingWinners = train(kohonenGroup, trainingData)
+    numOfActiveNeurons = countUniqueItems(trainingWinners)
+    trainingWinners = np.split(np.array(trainingWinners), 3)
+
+    mostActiveNeurons1 = [getMostCommonItem(row) for row in trainingWinners]
+    mostActiveNeurons = [getMostCommonItem(row)._iid for row in trainingWinners]
+    print('\n\n•Training Summary:')
+    table1 = PrettyTable()
+    table1.field_names = ['Total active', 'Most active', 'Last lRate']
+    table1.add_row([numOfActiveNeurons, mostActiveNeurons, kohonenGroup._currentLRate])
+    print(table1)
+
+
+    testWinners = kohonenGroup.classify(testData)
+
+    testWinners = np.split(np.array(testWinners), len(testData)/3)
+
+    print('\n\n•Test Results:')
+    table = PrettyTable()
+    table.field_names = [speciesNames[0], speciesNames[1], speciesNames[2]]
+    for row in testWinners:
+        table.add_row([neuron._iid for neuron in row ])
+
+    print(table)
+
+
+    for neuron in mostActiveNeurons1:
         print('\n')
         print('▄' * 25, '   [neuron: {:d}]\n\n'.format(neuron._iid))
-        for row in neuron._errorHist:
+        for row in neuron._weights:
             print(row)
+
+
+    answ = input('Print error history?\ty/n: ')
+    if answ == 'y':
+        for neuron in mostActiveNeurons1:
+            print('\n')
+            print('▄' * 25, '   [neuron: {:d}]\n\n'.format(neuron._iid))
+            for row in neuron._errorHist:
+                print(row)

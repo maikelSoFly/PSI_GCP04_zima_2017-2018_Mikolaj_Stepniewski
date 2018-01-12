@@ -4,7 +4,7 @@ from progressBar import *
 import copy
 
 
-
+""" Change emojis pixel values from (0,1) to (-1,1) """
 def bipolar(emoji):
     for i in range(len(emoji)):
         if emoji[i] == 0:
@@ -14,6 +14,7 @@ def bipolar(emoji):
 def countUniqueItems(arr):
     return len(Counter(arr).keys())
 
+""" Get random but unique pixels and mult by -1 """
 def noiseEmojis(arr, numOfNoisePixels):
     noisedArr = copy.deepcopy(arr)
     for emoji in noisedArr:
@@ -23,6 +24,7 @@ def noiseEmojis(arr, numOfNoisePixels):
 
     return noisedArr
 
+""" Print emojis """
 def drawEmojis(emojis):
     i = 0
     emojis = np.split(np.array(emojis), 2)
@@ -42,15 +44,16 @@ def drawEmojis(emojis):
 if __name__ == '__main__':
 
     #np.random.seed(5)
-    neuronGrid = [11, 11]
-    lRate=0.007
-    fRate=0.3
-    numOfNoisePixels=0
-    epochs=300
-    decay=30*12
+    neuronGrid = [15, 15]
+    lRate=0.007         # learning rate
+    fRate=0.418         # forget rate    BEST: 0.418
+    numOfNoisePixels=10 # number of noised pixels
+    epochs=200          # nuber of epochs
+    decay=30*12         # decay for updating lRate during the learning proccess
     pBar = ProgressBar(length=56)
 
     emoji = Emoji()
+    """ Get a set of training  emojis """
     emojisToGet = [ 'sad', 'smile', 'angry', 'laugh', 'surprised', 'confused' ]
     trainingSet = [ bipolar(emoji.getEmoji(name)) for name in emojisToGet ]
 
@@ -81,7 +84,6 @@ if __name__ == '__main__':
     winners2 = hebbGroup.classify(noisedSet)
 
     numOfActiveNeurons = countUniqueItems(winners1+winners2)
-
 
 
     print('\t\tNORMAL\tNOISED')

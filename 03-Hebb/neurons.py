@@ -20,17 +20,21 @@ class HebbNeuron:
         self.__dict__['_winnerCounter'] = 0
 
     def process(self, inputs):
+        """ Compute y_i (simple dot) """
         self._sum = np.dot(self._weights, inputs) + self._bias
         self._val = self._activFunc(self._sum)
         return self._val
 
 
     def train(self, inputs):
+        """ Get y_i """
         output = self.process(inputs)
         constant = self._lRate * output
         forget = (1.0 - self._fRate)
         for i in range(len(self._weights)):
+            """ Apply forgetting """
             self._weights[i] *= forget
+            """ Update weights """
             self._weights[i] += constant * inputs[i]
 
         # self._bias *= 1.0 - self._fRate
@@ -53,12 +57,13 @@ class HebbNeuronGroup:
         self.__dict__['_lRateFunc'] = lRateFunc
         self.__dict__['_currentLRate'] = None
 
+        """ Create group of neurons """
         self._neurons = [[HebbNeuron(numOfInputs, i*numOfNeurons[0]+j, activFunc, lRate=lRate, fRate=fRate)
             for i in range(numOfNeurons[0])]
             for j in range(numOfNeurons[1])
         ]
 
-
+    """ Reselting weights of all neurons in group """
     def resetWeights(self):
         for row in self._neurons:
             for neuron in row:
@@ -78,6 +83,7 @@ class HebbNeuronGroup:
 
     def train(self, vectors, histFreq=1, retMostCommon=False):
         winners = []
+        """ Finding winner (highest value) """
         for i, vector in enumerate(vectors):
             winner = None
             for row in self._neurons:
@@ -96,6 +102,7 @@ class HebbNeuronGroup:
             winner.train(vector)
             winners.append(winner)
 
+        """ Updating lRate """
         self.setLRate(self._lRateFunc(self._lRate))
 
         if retMostCommon:
@@ -103,6 +110,7 @@ class HebbNeuronGroup:
 
         return winners
 
+    """ Basicaly the same as above, but without updating weights """
     def classify(self, vectors):
         winners = []
         for i, vector in enumerate(vectors):
