@@ -18,15 +18,17 @@ def getMostCommonItem(arr):
 if __name__ == "__main__":
 
     """ Training parameters """
-    epochs = 10
-    decay = 0.01*(epochs)*13000
-    neuronGrid = [20, 20]
+    epochs = 100
+    decay = (epochs)*13000
+    neuronGrid = [25, 25]
     lRate = 0.07    # 0.07 one of the best
-    neighbourhoodRadius = 10
-    neighbourhoodRadiusMin = 0.1
+    neighbourhoodRadius = 5
+    neighbourhoodRadiusMin = 0.7
 
 
     trainingData = Data()._letters
+    #testData = noiseLetters(trainingData)
+
     numOfInputs = len(trainingData['A'])
 
 
@@ -41,9 +43,20 @@ if __name__ == "__main__":
     )
 
     winners = {}
+    pbar = ProgressBar()
+    pbar.start(maxVal=epochs)
     for i in range(epochs):
         for key, value in trainingData.items():
             winners[key] = kohonenGroup.train(value)
         kohonenGroup.setNeighbourhoodRadius()
+        pbar.update()
 
-    print(winners)
+
+    trainingTable = PrettyTable()
+    trainingTable.field_names = ['Letter', 'Neuron iid', 'x', 'y']
+    for key, neuron in winners.items():
+        trainingTable.add_row([key, neuron._iid, neuron._x, neuron._y])
+    uniqueNeurons = countUniqueItems(winners.values())
+    print('\nActive neurons', uniqueNeurons)
+    print('Number of letters', len(trainingData), '\n')
+    print(trainingTable)

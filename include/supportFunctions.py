@@ -64,6 +64,7 @@ class Sigm:
         sigmDeriv.__name__ += '({0:.3f})'.format(beta)
         return sigmDeriv
 
+
 class SignSigm:
     def __call__(self,alfa):
         def signSigm(x):
@@ -76,10 +77,12 @@ class SignSigm:
         signSigmDeriv.__name__+='({0:.3f})'.format(alfa)
         return signSigmDeriv
 
+
 def hardSign(x):
     if x<0:
         return -1.0
     return 1.0
+
 
 class Linear:
     def __call__(self):
@@ -91,12 +94,14 @@ class Linear:
             return 1
         return linearDeriv
 
+
 """ Mean Squared Error function """
 def MSE(results, expected):
     sum = 0.0
     for i in range(len(results)):
         sum+=(results[i]-expected[i])**2
     return sum/len(results)
+
 
 def euklidesDistance(v1, v2):
     sum = 0.0
@@ -107,8 +112,10 @@ def euklidesDistance(v1, v2):
             sum += (v1[i] - v2[i])**2
     return sqrt(sum)
 
+
 def distance(coords1, coords2):
     return np.sqrt((coords1[0]-coords2[0])**2 + (coords1[1]-coords2[1])**2)
+
 
 def simpleLRateCorrection(lambd):
     t=-1
@@ -117,6 +124,7 @@ def simpleLRateCorrection(lambd):
         t+=1
         return x * np.exp(-t/lambd)
     return f
+
 
 def neighbourhoodRadiusCorrection(lambdaMax, lambdaMin, kMax):
     k = -1

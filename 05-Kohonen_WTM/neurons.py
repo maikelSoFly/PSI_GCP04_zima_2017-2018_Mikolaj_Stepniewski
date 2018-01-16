@@ -24,6 +24,7 @@ class KohonenNeuron(Neuron):
         self.__dict__['_processFunc'] = processFunc
         self.__dict__['_startWeights'] = self._weights[:]
         self.__dict__['_errorHist'] = []
+        self.__dict__['_iid'] = iid
         self.__dict__['_x'] = x
         self.__dict__['_y'] = y
 
@@ -32,11 +33,14 @@ class KohonenNeuron(Neuron):
         return self._error
 
     def train(self, vector, G):
+        const = self._lRate * G
         for i in range(len(self._weights)):
-            self._weights[i] += self._lRate * G * (vector[i] - self._weights[i])
+            self._weights[i] +=  const * (vector[i] - self._weights[i])
 
     def resetWeights(self):
         self._weights = self._startWeights[:]
+
+
 
 
 """ Simple WTA for now...
@@ -66,10 +70,12 @@ class KohonenNeuronGroup:
             for neuron in row:
                 neuron.resetWeights()
 
+
     def resetWins(self):
         for row in self._neurons:
             for neuron in row:
                 neuron._winnerCounter = 0
+
 
     def setLRate(self, lRate):
         self._currentLRate = lRate
@@ -77,10 +83,10 @@ class KohonenNeuronGroup:
             for neuron in row:
                 neuron._lRate = lRate
 
+
     def setNeighbourhoodRadius(self):
         self.neighbourhoodRadius = self._neighbourhoodRadiusFunc(self._neighbourhoodRadius)
 
-        print(self.neighbourhoodRadius)
 
     def trainNeighbours(self, vector, winner):
         coordsW = [winner._x, winner._y]
@@ -88,7 +94,6 @@ class KohonenNeuronGroup:
         for row in self._neurons:
             for neuron in row:
                 neuron.train(vector, self.gaussNeighbourhood(coordsW, [neuron._x, neuron._y]))
-
 
 
     def train(self, vector):
@@ -107,9 +112,7 @@ class KohonenNeuronGroup:
         winner.train(vector, 1)
         self.trainNeighbours(vector, winner)
 
-
-        self.setLRate(self._lRateFunc(self._lRate))
-        
+        #self.setLRate(self._lRateFunc(self._lRate))
 
         return winner
 
@@ -123,7 +126,6 @@ class KohonenNeuronGroup:
 
     """ Basicaly the same as above, but without updating weights """
     def classify(self, vectors):
-        winners = []
         for i, vector in enumerate(vectors):
             winner = None
             for row in self._neurons:
@@ -135,9 +137,7 @@ class KohonenNeuronGroup:
                         if neuron._error < winner._error:
                             winner = neuron
 
-            winners.append(winner)
-
-        return winners
+        return winner
 
 
     """ Access methods """
