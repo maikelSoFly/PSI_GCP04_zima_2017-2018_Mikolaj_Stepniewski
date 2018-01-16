@@ -54,8 +54,8 @@ def train(kohonenGroup, trainingData):
 if __name__ == '__main__':
 
     """ Training parameters """
-    epochs = 30
-    decay = (epochs)*13000
+    epochs = 25
+    decay = 0.01*(epochs)*13000
     neuronGrid = [20, 20]
     lRate = 0.07    # 0.07 one of the best
 
@@ -131,19 +131,24 @@ if __name__ == '__main__':
     testWinners = np.split(np.array(testWinners), len(testData)/3)
 
     print('\n\n•Test Results:')
-    table = PrettyTable()
-    table.field_names = [speciesNames[0], speciesNames[1], speciesNames[2]]
+    table2 = PrettyTable()
+    table2.field_names = [speciesNames[0], speciesNames[1], speciesNames[2]]
     for row in testWinners:
-        table.add_row([neuron._iid for neuron in row ])
+        table2.add_row([neuron._iid for neuron in row ])
 
-    print(table)
+    print(table2)
 
-
+    print('\n\n•Winners Weights:')
+    table3 = PrettyTable()
+    table3.field_names = ['Neuron iid', 'Sepal length', 'Sepal width', 'Petal length', 'Petal width']
     for neuron in mostActiveNeurons1:
-        print('\n')
-        print('▄' * 25, '   [neuron: {:d}]\n\n'.format(neuron._iid))
-        for row in neuron._weights:
-            print(row)
+        table3.add_row([neuron._iid,
+        round(neuron._weights[0], 3),
+        round(neuron._weights[1], 3),
+        round(neuron._weights[2], 3),
+        round(neuron._weights[3], 3)])
+
+    print(table3)
 
 
     answ = input('Print error history?\ty/n: ')

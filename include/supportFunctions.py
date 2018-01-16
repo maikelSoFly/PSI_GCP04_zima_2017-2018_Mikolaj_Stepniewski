@@ -107,6 +107,9 @@ def euklidesDistance(v1, v2):
             sum += (v1[i] - v2[i])**2
     return sqrt(sum)
 
+def distance(coords1, coords2):
+    return np.sqrt((coords1[0]-coords2[0])**2 + (coords1[1]-coords2[1])**2)
+
 def simpleLRateCorrection(lambd):
     t=-1
     def f(x):
@@ -114,6 +117,15 @@ def simpleLRateCorrection(lambd):
         t+=1
         return x * np.exp(-t/lambd)
     return f
+
+def neighbourhoodRadiusCorrection(lambdaMax, lambdaMin, kMax):
+    k = -1
+    def f(x):
+        nonlocal k
+        k+=1
+        return lambdaMax*(lambdaMin/lambdaMax)**(k/kMax)
+    return f
+
 
 def normalizeInputs(arr):
     sum = 0.0
