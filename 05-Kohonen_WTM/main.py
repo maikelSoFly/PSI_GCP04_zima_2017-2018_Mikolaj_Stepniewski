@@ -20,10 +20,10 @@ if __name__ == "__main__":
     """ Training parameters """
     epochs = 100
     decay = (epochs)*13000
-    neuronGrid = [25, 25]
-    lRate = 0.07    # 0.07 one of the best
+    neuronGrid = [20, 20]
+    lRate = 0.1    # 0.07 one of the best
     neighbourhoodRadius = 5
-    neighbourhoodRadiusMin = 0.7
+    neighbourhoodRadiusMin = 0.1
 
 
     trainingData = Data()._letters

@@ -120,7 +120,7 @@ class KohonenNeuronGroup:
     def gaussNeighbourhood(self, coordsW, coordsI):
         dist = distance(coordsW, coordsI)
 
-        return np.exp((-dist**2)/(2*self._neighbourhoodRadius**2))
+        return np.exp(-(dist**2)/(2*self._neighbourhoodRadius**2))
 
 
 
