@@ -1,7 +1,11 @@
+import copy
+import numpy as np
+
 class Data:
 
     def __init__(self):
         self.__dict__['_letters'] = {}
+        self.__dict__['_letterLen']= 35
         self.getLetters()
 
     def getLetters(self):
@@ -31,3 +35,15 @@ class Data:
             self._letters['X'] = [1,0,0,0,1,1,0,0,0,1,0,1,0,1,0,0,0,1,0,0,0,1,0,1,0,1,0,0,0,1,1,0,0,0,1]
             self._letters['Y'] = [1,0,0,0,1,1,0,0,0,1,0,1,0,1,0,0,0,1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1,0,0]
             self._letters['Z'] = [1,1,1,1,1,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,1,1,1,1,1]
+
+
+    def getNoisedLetters(self, keys, noNoisePixels=2):
+        noisedLetters = {}
+        for key in keys:
+            noisedLetters[key] = self._letters[key]
+            pixelsIndexes = np.random.choice(self._letterLen, noNoisePixels, replace=False)
+            for index in pixelsIndexes:
+                pixel = noisedLetters[key][index]
+                noisedLetters[key][index] = 1 if pixel==0 else 0
+
+        return noisedLetters

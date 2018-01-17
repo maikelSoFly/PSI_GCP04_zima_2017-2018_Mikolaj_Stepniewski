@@ -128,10 +128,11 @@ def simpleLRateCorrection(lambd):
 
 def neighbourhoodRadiusCorrection(lambdaMax, lambdaMin, kMax):
     k = -1
+    minMaxRate = lambdaMin/lambdaMax
     def f(x):
         nonlocal k
         k+=1
-        return lambdaMax*(lambdaMin/lambdaMax)**(k/kMax)
+        return lambdaMax*((minMaxRate)**(k/kMax))
     return f
 
 

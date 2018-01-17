@@ -28,14 +28,17 @@ class KohonenNeuron(Neuron):
         self.__dict__['_x'] = x
         self.__dict__['_y'] = y
 
+
     def process(self, vector):
         self._error = self._processFunc(vector, self._weights)
         return self._error
+
 
     def train(self, vector, G):
         const = self._lRate * G
         for i in range(len(self._weights)):
             self._weights[i] +=  const * (vector[i] - self._weights[i])
+
 
     def resetWeights(self):
         self._weights = self._startWeights[:]
@@ -85,15 +88,21 @@ class KohonenNeuronGroup:
 
 
     def setNeighbourhoodRadius(self):
-        self.neighbourhoodRadius = self._neighbourhoodRadiusFunc(self._neighbourhoodRadius)
+        self._neighbourhoodRadius = self._neighbourhoodRadiusFunc(self._neighbourhoodRadius)
 
 
     def trainNeighbours(self, vector, winner):
-        coordsW = [winner._x, winner._y]
-
+        coordsW = (winner._x, winner._y)
         for row in self._neurons:
             for neuron in row:
                 neuron.train(vector, self.gaussNeighbourhood(coordsW, [neuron._x, neuron._y]))
+
+
+    def gaussNeighbourhood(self, coordsW, coordsI):
+        dx = (coordsW[0]-coordsI[0])
+        dy = (coordsW[1]-coordsI[1])
+        dist = dx*dx + dy*dy
+        return np.exp(-dist/(2*self._neighbourhoodRadius**2))
 
 
     def train(self, vector):
@@ -111,31 +120,22 @@ class KohonenNeuronGroup:
 
         winner.train(vector, 1)
         self.trainNeighbours(vector, winner)
-
-        #self.setLRate(self._lRateFunc(self._lRate))
+        self.setLRate(self._lRateFunc(self._lRate))
 
         return winner
 
 
-    def gaussNeighbourhood(self, coordsW, coordsI):
-        dist = distance(coordsW, coordsI)
-
-        return np.exp(-(dist**2)/(2*self._neighbourhoodRadius**2))
-
-
-
     """ Basicaly the same as above, but without updating weights """
-    def classify(self, vectors):
-        for i, vector in enumerate(vectors):
-            winner = None
-            for row in self._neurons:
-                for neuron in row:
-                    neuron.process(vector)
-                    if winner == None:
+    def classify(self, vector):
+        winner = None
+        for row in self._neurons:
+            for neuron in row:
+                neuron.process(vector)
+                if winner == None:
+                    winner = neuron
+                elif winner != None:
+                    if neuron._error < winner._error:
                         winner = neuron
-                    elif winner != None:
-                        if neuron._error < winner._error:
-                            winner = neuron
 
         return winner
 

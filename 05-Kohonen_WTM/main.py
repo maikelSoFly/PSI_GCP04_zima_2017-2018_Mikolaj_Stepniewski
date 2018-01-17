@@ -18,17 +18,17 @@ def getMostCommonItem(arr):
 if __name__ == "__main__":
 
     """ Training parameters """
-    epochs = 100
-    decay = (epochs)*13000
-    neuronGrid = [20, 20]
-    lRate = 0.1    # 0.07 one of the best
-    neighbourhoodRadius = 5
-    neighbourhoodRadiusMin = 0.1
+    epochs = 50
+    decay = 0.1*(epochs)*13000
+    neuronGrid = (20, 20)
+    lRate = 0.11   # 0.07 one of the best
+    neighbourhoodRadius = 3
+    neighbourhoodRadiusMin = 0.5
+    noNoisePixels = 2
 
 
     trainingData = Data()._letters
-    #testData = noiseLetters(trainingData)
-
+    testData = Data().getNoisedLetters(['U','N','C','O','P','Y','R','I','G','H','T','A','B','L','E'], noNoisePixels)
     numOfInputs = len(trainingData['A'])
 
 
@@ -36,12 +36,19 @@ if __name__ == "__main__":
         numOfInputs=numOfInputs,
         numOfNeurons=neuronGrid,
         processFunc=euklidesDistance,
-        lRateFunc=simpleLRateCorrection(decay),
+        lRateFunc=Linear()(),
         neighbourhoodRadius=neighbourhoodRadius,
         nRadiusFunc=neighbourhoodRadiusCorrection(neighbourhoodRadius, neighbourhoodRadiusMin, epochs),
         lRate=lRate
     )
 
+    paramsTable = PrettyTable()
+    paramsTable.field_names = ['lRate', 'RadiusMax', 'RadiusMin', 'neurons', 'epochs']
+    paramsTable.add_row([kohonenGroup._lRate, neighbourhoodRadius, neighbourhoodRadiusMin, kohonenGroup['totalNumOfNeurons'], epochs])
+    print(paramsTable)
+
+
+    print('\nrunning {:d} epochs...'.format(epochs))
     winners = {}
     pbar = ProgressBar()
     pbar.start(maxVal=epochs)
@@ -51,12 +58,24 @@ if __name__ == "__main__":
         kohonenGroup.setNeighbourhoodRadius()
         pbar.update()
 
+    testWinners = {}
+    for key, value in testData.items():
+        testWinners[key] = kohonenGroup.classify(value)
+
 
     trainingTable = PrettyTable()
-    trainingTable.field_names = ['Letter', 'Neuron iid', 'x', 'y']
+    trainingTable.field_names = ['Letter', 'Neuron id', 'x', 'y', 'Neuron id*', 'x*', 'y*']
     for key, neuron in winners.items():
-        trainingTable.add_row([key, neuron._iid, neuron._x, neuron._y])
+        testNeuron = testWinners.get(key, None)
+        testNID = '' if not testNeuron else testNeuron._iid
+        testX = '' if not testNeuron else testNeuron._x
+        testY = '' if not testNeuron else testNeuron._y
+        trainingTable.add_row([key, neuron._iid, neuron._x, neuron._y, testNID, testX, testY])
     uniqueNeurons = countUniqueItems(winners.values())
     print('\nActive neurons', uniqueNeurons)
-    print('Number of letters', len(trainingData), '\n')
+    print('Number of letters', len(trainingData))
+    uniqueNeurons = countUniqueItems(testWinners.values())
+    print('\nActive test neurons', uniqueNeurons)
+    print('Number of test letters', len(testData), '\n')
     print(trainingTable)
+    print('* - testing letters noised with {:d} pixels.\n'.format(noNoisePixels))
