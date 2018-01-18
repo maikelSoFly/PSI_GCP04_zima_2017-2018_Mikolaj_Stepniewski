@@ -15,6 +15,7 @@ sys.path.append('../include')
 from neuron import *
 from supportFunctions import *
 from collections import Counter
+import copy
 
 
 class KohonenNeuron(Neuron):
@@ -22,7 +23,7 @@ class KohonenNeuron(Neuron):
         Neuron.__init__(self, numOfInputs, iid, activFunc=None, lRate=lRate, bias=0)
         self.__dict__['_winnerCounter'] = 0
         self.__dict__['_processFunc'] = processFunc
-        self.__dict__['_startWeights'] = self._weights[:]
+        self.__dict__['_startWeights'] = copy.deepcopy(self._weights)
         self.__dict__['_errorHist'] = []
         self.__dict__['_iid'] = iid
         self.__dict__['_x'] = x
@@ -30,11 +31,13 @@ class KohonenNeuron(Neuron):
 
 
     def process(self, vector):
+        """ Euklides distance between input vector and weights vector """
         self._error = self._processFunc(vector, self._weights)
         return self._error
 
 
     def train(self, vector, G):
+        """ WTM train with magnitude based on neighbourhood function """
         const = self._lRate * G
         for i in range(len(self._weights)):
             self._weights[i] +=  const * (vector[i] - self._weights[i])
@@ -67,11 +70,14 @@ class KohonenNeuronGroup:
             for j in range(numOfNeurons[1])
         ]
 
-
-    def resetWeights(self):
+    """ Reset training parameters and reset weights to initial ones """
+    def resetGroup(self, lRate, radius, radiusFunc):
+        self._lRate = lRate
+        self._neighbourhoodRadius = radius
+        self._neighbourhoodRadiusFunc = radiusFunc
         for row in self._neurons:
             for neuron in row:
-                neuron.resetWeights()
+                neuron._weights = copy.deepcopy(neuron._startWeights)
 
 
     def resetWins(self):
@@ -117,7 +123,7 @@ class KohonenNeuronGroup:
                         winner = neuron
 
         """ Winner Takes MOST """
-
+        """ Updating weights with magnitude based on neighbourhood func """
         winner.train(vector, 1)
         self.trainNeighbours(vector, winner)
         self.setLRate(self._lRateFunc(self._lRate))

@@ -18,20 +18,24 @@ def getMostCommonItem(arr):
 if __name__ == "__main__":
 
     """ Training parameters """
-    epochs = 50
+    epochs = 100
     decay = 0.1*(epochs)*13000
     neuronGrid = (20, 20)
-    lRate = 0.11   # 0.07 one of the best
-    neighbourhoodRadius = 3
+    lRate = 0.1   # 0.07 one of the best
+    neighbourhoodRadius = 10
     neighbourhoodRadiusMin = 0.5
     noNoisePixels = 2
+    assignmentMap = [[' ' for _ in range(neuronGrid[1])] for _ in range(neuronGrid[0])]
+    resultsInNeighbourhood = 0
+    resultsExact = 0
+    resultsWrong = 0
 
-
+    """ Getting training and test data """
     trainingData = Data()._letters
-    testData = Data().getNoisedLetters(['U','N','C','O','P','Y','R','I','G','H','T','A','B','L','E'], noNoisePixels)
+    testData = Data().getNoisedLetters(['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y', 'Z'], noNoisePixels)
     numOfInputs = len(trainingData['A'])
 
-
+    """ Creating kohonen group with designated parameters """
     kohonenGroup = KohonenNeuronGroup(
         numOfInputs=numOfInputs,
         numOfNeurons=neuronGrid,
@@ -47,7 +51,7 @@ if __name__ == "__main__":
     paramsTable.add_row([kohonenGroup._lRate, neighbourhoodRadius, neighbourhoodRadiusMin, kohonenGroup['totalNumOfNeurons'], epochs])
     print(paramsTable)
 
-
+    """ Process of learning """
     print('\nrunning {:d} epochs...'.format(epochs))
     winners = {}
     pbar = ProgressBar()
@@ -58,11 +62,13 @@ if __name__ == "__main__":
         kohonenGroup.setNeighbourhoodRadius()
         pbar.update()
 
+    """ Process of testing """
     testWinners = {}
     for key, value in testData.items():
         testWinners[key] = kohonenGroup.classify(value)
 
 
+    """ Printing results, comparision tables and map """
     trainingTable = PrettyTable()
     trainingTable.field_names = ['Letter', 'Neuron id', 'x', 'y', 'Neuron id*', 'x*', 'y*']
     for key, neuron in winners.items():
@@ -79,3 +85,23 @@ if __name__ == "__main__":
     print('Number of test letters', len(testData), '\n')
     print(trainingTable)
     print('* - testing letters noised with {:d} pixels.\n'.format(noNoisePixels))
+
+    for key, value in testWinners.items():
+        dist = distance((value._x, value._y), (winners[key]._x, winners[key]._y))
+        if dist <= neighbourhoodRadius and dist != 0:
+            resultsInNeighbourhood+=1
+        elif dist == 0:
+            resultsExact += 1
+    resultsWrong = len(testData)-(resultsExact+resultsInNeighbourhood)
+
+
+    for key, value in winners.items():
+        assignmentMap[value._x][value._y] = key
+
+    for key, value in testWinners.items():
+        assignmentMap[value._x][value._y] = key+'*'
+
+    for row in assignmentMap:
+        print(row)
+
+    print('exact: {:d}\talmost: {:d}\twrong: {:d}'.format(resultsExact, resultsInNeighbourhood, resultsWrong))
