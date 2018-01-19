@@ -18,7 +18,7 @@ def getMostCommonItem(arr):
 if __name__ == "__main__":
 
     """ Training parameters """
-    epochs = 20
+    epochs = 100
     decay = 0.1*(epochs)*13000
     neuronGrid = (20, 20)
     lRate = 0.1   # 0.07 one of the best
